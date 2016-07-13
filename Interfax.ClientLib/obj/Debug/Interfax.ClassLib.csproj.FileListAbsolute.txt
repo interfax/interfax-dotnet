@@ -1,0 +1,4 @@
+c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClassLib\bin\Debug\Interfax.ClientLib.dll
+c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClassLib\bin\Debug\Interfax.ClientLib.pdb
+c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClassLib\obj\Debug\Interfax.ClientLib.dll
+c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClassLib\obj\Debug\Interfax.ClientLib.pdb
