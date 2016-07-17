@@ -1,6 +1,13 @@
-# InterFAX API library for .Net
+# InterFAX client library for .Net
 
-## Installation instructions
+This is the .Net client library for the InterFAX fax API. To use it, you'll need an InterFAX account at https://www.interfax.net/en/dev/register. 
+
+[Installation](https://github.com/interfax/interfax-dotnet#installation)
+[Usage](https://github.com/interfax/interfax-dotnet#usage)
+[Examples](https://github.com/interfax/interfax-dotnet#examples)
+[Contributing](https://github.com/interfax/interfax-dotnet#contributing)
+
+## Installation
 
 ### Via Nuget
 
@@ -11,7 +18,11 @@
 1. Download the library at https://github.com/interfax/interfax-csharp/releases/latest
 2. ...
 
-## Sample uses of this library
+## Usage
+
+...
+
+## Examples
 
 Samples demonstrating the usage of this library can be found at the following locations:
 
@@ -19,3 +30,28 @@ Samples demonstrating the usage of this library can be found at the following lo
 
 * Basic samples: https://github.com/interfax/interfax-csharp-samples
 * More advanced usage: https://www.interfax.net/en/dev/csharp
+
+## Contributing
+To contribute to the library, docs, or examples, [create an issue](https://github.com/interfax/interfax-dotnet/issues) or a pull request.
+
+## License
+
+Copyright (c) 2016 Interfax Communications Ltd
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
