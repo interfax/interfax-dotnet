@@ -1,6 +1,6 @@
 # InterFAX client library for .Net
 
-This is the .Net client library for the InterFAX fax API. To use it, you'll need an InterFAX account at https://www.interfax.net/en/dev/register. 
+This is the .Net client library for the InterFAX fax API. To use it, you'll need [register for an InterFAX developer account](https://www.interfax.net/en/dev/register). 
 
 * [Installation](https://github.com/interfax/interfax-dotnet#installation)
 * [Usage](https://github.com/interfax/interfax-dotnet#usage)
