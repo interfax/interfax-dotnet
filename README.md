@@ -5,9 +5,10 @@ This is the .Net client library for the InterFAX fax API. To use it, you'll need
 * [Installation](https://github.com/interfax/interfax-dotnet#installation)
 * [Usage](https://github.com/interfax/interfax-dotnet#usage)
 * [Examples](https://github.com/interfax/interfax-dotnet#examples)
+* [Documentation](https://github.com/interfax/interfax-dotnet#documentation)
+* [Support](https://github.com/interfax/interfax-dotnet#support)
 * [Contributing](https://github.com/interfax/interfax-dotnet#contributing)
 * [License](https://github.com/interfax/interfax-dotnet#license)
-
 
 ## Installation
 
@@ -33,8 +34,21 @@ Samples demonstrating the usage of this library can be found at the following lo
 * Basic samples: https://github.com/interfax/interfax-csharp-samples
 * More advanced usage: https://www.interfax.net/en/dev/csharp
 
+## Documentation
+
+* A 'Getting Started' guide is available at [TBD](#)
+* More advanced topics are covered at [TBD](#)
+* Documentation of the REST API can be found at https://www.interfax.net/en/dev/rest/reference
+
+## Support
+
+Support can be received through the following channels:
+
+* The InterFAX developer forum at https://www.interfax.net/en/forum/dev
+* Our dedicated developer support desk at dev@interfax.net
+
 ## Contributing
-To contribute to the library, docs, or examples, [create an issue](https://github.com/interfax/interfax-dotnet/issues) or a pull request.
+To contribute to the library, docs, or examples available here on Github, [create an issue](https://github.com/interfax/interfax-dotnet/issues) or a pull request.
 
 ## License
 
