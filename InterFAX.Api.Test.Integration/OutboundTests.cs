@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -58,6 +59,49 @@ namespace InterFAX.Api.Test.Integration
             Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(new FileInfo(filename).Length > 0);
             File.Delete(filename);
+        }
+
+        [Test]
+        public void cancelling_already_sent_fax_builds_error_response()
+        {
+            const int messageId = 661900007;
+
+            var exception = Assert.Throws<AggregateException>(() =>
+            {
+                var response = _interfax.Outbound.CancelFax(messageId).Result;
+            });
+
+            var apiException = exception.InnerExceptions[0] as ApiException;
+            Assert.NotNull(apiException);
+
+            var error = apiException.Error;
+            Assert.AreEqual(HttpStatusCode.Conflict, apiException.StatusCode);
+            Assert.AreEqual(-162, error.Code);
+            Assert.AreEqual("Transaction is in a wrong status for this operation", error.Message);
+            Assert.AreEqual("Transaction ID 661900007 has already completed", error.MoreInfo);
+        }
+
+        [Test]
+        public void can_resend_fax()
+        {
+            const int messageId = 661900007;
+
+            var exception = Assert.Throws<AggregateException>(() =>
+            {
+                var response = _interfax.Outbound.CancelFax(messageId).Result;
+            });
+        }
+
+        [Ignore("")]
+        [Test]
+        public void can_hide_fax()
+        {
+            const int messageId = 661900007;
+
+            Assert.DoesNotThrow(() =>
+            {
+                var response = _interfax.Outbound.HideFax(messageId).Result;
+            });
         }
     }
 }

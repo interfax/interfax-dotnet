@@ -53,6 +53,7 @@
     <Compile Include="Account.cs" />
     <Compile Include="ApiException.cs" />
     <Compile Include="Documents.ListOptions.cs" />
+    <Compile Include="Dtos\Error.cs" />
     <Compile Include="Dtos\ForwardingEmail.cs" />
     <Compile Include="Dtos\InboundFax.cs" />
     <Compile Include="Dtos\OutboundDocument.cs" />

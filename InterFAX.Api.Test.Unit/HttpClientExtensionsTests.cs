@@ -16,8 +16,9 @@ namespace InterFAX.Api.Test.Unit
         {
             _handler = new MockHttpMessageHandler
             {
-                ExpectedContent = "{}",
+                ExpectedContent = "Not json...",
                 ExpectedReasonPhrase = "Something was not found.",
+                ExpectedContentType = "text/plain",
                 ExpectedStatusCode = HttpStatusCode.NotFound,
                 ExpectedUri = new Uri("https://rest.interfax.net/accounts/self/ppcards/balance")
             };
@@ -29,7 +30,9 @@ namespace InterFAX.Api.Test.Unit
 
             var apiException = exception.InnerExceptions[0] as ApiException;
             Assert.NotNull(apiException);
-            Assert.AreEqual(_handler.ExpectedReasonPhrase, apiException.ReasonPhrase);
+            Assert.AreEqual((int) _handler.ExpectedStatusCode, apiException.Error.Code);
+            Assert.AreEqual(_handler.ExpectedContent, apiException.Error.Message);
+            Assert.AreEqual(_handler.ExpectedReasonPhrase, apiException.Error.MoreInfo);
         }
     }
 }

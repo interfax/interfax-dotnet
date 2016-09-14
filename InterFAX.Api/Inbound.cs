@@ -60,7 +60,8 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to mark as read.</param>
         public async Task<string> MarkRead(int id)
         {
-            return await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark");
+            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark");
+            return response.ReasonPhrase;
         }
 
         /// <summary>
@@ -69,7 +70,8 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to mark as read.</param>
         public async Task<string> MarkUnread(int id)
         {
-            return await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark?unread=true");
+            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark?unread=true");
+            return response.ReasonPhrase;
         }
 
         /// <summary>
@@ -82,7 +84,8 @@ namespace InterFAX.Api
             var options = string.IsNullOrEmpty(emailAddress)
                 ? null
                 : new Dictionary<string, string> {{"emailAddress", emailAddress}};
-            return await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/resend", options);
+            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/resend", options);
+            return response.ReasonPhrase;
         }
         #endregion
     }

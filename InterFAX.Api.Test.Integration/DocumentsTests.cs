@@ -19,7 +19,7 @@ namespace InterFAX.Api.Test.Integration
             _interfax = new InterFAX();
         }
 
-
+        [Ignore("")]
         [Test]
         public void can_get_outbound_document_list()
         {
@@ -27,7 +27,7 @@ namespace InterFAX.Api.Test.Integration
             Assert.IsTrue(list.Any());
         }
 
-
+        [Ignore("")]
         [Test]
         public void can_get_outbound_document_list_with_listoptions()
         {

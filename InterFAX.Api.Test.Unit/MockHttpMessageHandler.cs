@@ -24,6 +24,8 @@ namespace InterFAX.Api.Test.Unit
         public HttpStatusCode ExpectedStatusCode { get; set; } = HttpStatusCode.OK;
         public Uri ExpectedUri { get; set; }
         public HttpMethod ExpectedHttpMethod { get; set; } = HttpMethod.Get;
+        public string ExpectedContentType { get; set; } = "application/json";
+        public Uri ExpectedLocationHeader { get; set; } = null;
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -33,7 +35,8 @@ namespace InterFAX.Api.Test.Unit
             var responseMessage = new HttpResponseMessage(ExpectedStatusCode);
             if (ExpectedContent != null) responseMessage.Content = new StringContent(ExpectedContent);
             if (!string.IsNullOrEmpty(ExpectedReasonPhrase)) responseMessage.ReasonPhrase = ExpectedReasonPhrase;
-            responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            if (ExpectedLocationHeader != null) responseMessage.Headers.Location = ExpectedLocationHeader;
+            responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(ExpectedContentType);
 
             return await Task.FromResult(responseMessage);
         }

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using NUnit.Framework;
 
 namespace InterFAX.Api.Test.Integration
@@ -96,6 +97,27 @@ namespace InterFAX.Api.Test.Integration
             {
                 var response = _interfax.Inbound.Resend(messageId).Result;
             });
+        }
+
+
+        [Test]
+        public void resending_non_existing_fax_builds_error_response()
+        {
+            const int messageId = 1;
+
+            var exception = Assert.Throws<AggregateException>(() =>
+            {
+                var response = _interfax.Inbound.Resend(messageId).Result;
+            });
+
+            var apiException = exception.InnerExceptions[0] as ApiException;
+            Assert.NotNull(apiException);
+
+            var error = apiException.Error;
+            Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
+            Assert.AreEqual(-3001, error.Code);
+            Assert.AreEqual("Invalid MessageID or User is not authorized to access message", error.Message);
+            Assert.AreEqual("Invalid ID [1]", error.MoreInfo);
         }
 
         [Test]

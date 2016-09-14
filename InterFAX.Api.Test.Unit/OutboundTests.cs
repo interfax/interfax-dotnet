@@ -1,5 +1,7 @@
 using System;
 using System.Globalization;
+using System.Net;
+using System.Net.Http;
 using System.Web;
 using NUnit.Framework;
 
@@ -74,6 +76,89 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetFaxRecord(1).Result;
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void CancelFax_should_call_correct_uri()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Post,
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/cancel")
+            };
+
+            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.CancelFax(1).Result;
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void ResendFax_should_call_correct_uri()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Post,
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend")
+            };
+
+            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.ResendFax(1).Result;
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void ResendFax_should_call_correct_uri_with_faxNumber()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Post,
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend?faxNumber=123456789")
+            };
+
+            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.ResendFax(1, "123456789").Result;
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void ResendFax_returns_location_header()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Post,
+                ExpectedStatusCode = HttpStatusCode.Created,
+                ExpectedLocationHeader = new Uri("https://rest.interfax.net/outbound/faxes/1"),
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend?faxNumber=123456789")
+            };
+
+            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.ResendFax(1, "123456789").Result;
+            Assert.AreEqual(_handler.ExpectedLocationHeader, response);
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void HideFax_should_call_correct_uri()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Post,
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/hide")
+            };
+
+            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.HideFax(1).Result;
             Assert.That(_handler.ExpectedUriWasVisited());
         }
     }

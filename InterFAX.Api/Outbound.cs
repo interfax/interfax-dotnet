@@ -81,6 +81,42 @@ namespace InterFAX.Api
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Cancel a fax in progress.
+        /// </summary>
+        /// <param name="id">The message ID of the fax to cancel.</param>
+        public async Task<string> CancelFax(int id)
+        {
+            var response = await _interfax.HttpClient.PostAsync($"/outbound/faxes/{id}/cancel");
+            return response.ReasonPhrase;
+        }
+
+        /// <summary>
+        /// Resend a previously-submitted fax, without needing to re-upload the original document.
+        /// 
+        /// The resent fax is allocated a new message ID.
+        /// </summary>
+        /// <param name="id">The message ID of the fax to resend.</param>
+        /// <param name="faxNumber">(optional) The new destination fax number to which this fax should be sent.</param>
+        public async Task<Uri> ResendFax(int id, string faxNumber = null)
+        {
+            var options = string.IsNullOrEmpty(faxNumber)
+                ? null
+                : new Dictionary<string, string> { { "faxNumber", faxNumber } };
+            var response = await _interfax.HttpClient.PostAsync($"/outbound/faxes/{id}/resend", options);
+            return response.Headers.Location;
+        }
+
+        /// <summary>
+        /// Hide a fax from listing in queries (there is no way to unhide a fax).
+        /// </summary>
+        /// <param name="id">The message ID of the fax to hide.</param>
+        public async Task<string> HideFax(int id)
+        {
+            var response = await _interfax.HttpClient.PostAsync($"/outbound/faxes/{id}/hide");
+            return response.ReasonPhrase;
+        }
         #endregion
     }
 }
