@@ -1,7 +1,0 @@
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\bin\Release\Interfax.ClientLib.XML
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\bin\Release\Interfax.ClientLib.dll
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\bin\Release\Interfax.ClientLib.pdb
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\bin\Release\Newtonsoft.Json.dll
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\bin\Release\Newtonsoft.Json.xml
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\obj\Release\Interfax.ClientLib.dll
-c:\Projects\Interfax\trunk\Interfax20\ClientLib\ClientLib\obj\Release\Interfax.ClientLib.pdb

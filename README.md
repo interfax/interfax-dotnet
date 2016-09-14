@@ -1,73 +1,510 @@
-# InterFAX client library for .Net
 
-This is the .Net client library for the InterFAX fax API. To use it, you'll need [register for an InterFAX developer account](https://www.interfax.net/en/dev/register). 
+# InterFAX .NET Library
 
-* [Installation](https://github.com/interfax/interfax-dotnet#installation)
-* [Usage](https://github.com/interfax/interfax-dotnet#usage)
-* [Examples](https://github.com/interfax/interfax-dotnet#examples)
-* [Documentation](https://github.com/interfax/interfax-dotnet#documentation)
-* [Support](https://github.com/interfax/interfax-dotnet#support)
-* [Contributing](https://github.com/interfax/interfax-dotnet#contributing)
-* [License](https://github.com/interfax/interfax-dotnet#license)
+[![Build Status](https://travis-ci.org/interfax/interfax-nodejs.svg?branch=master)](https://travis-ci.org/interfax/interfax-nodejs)
+
+[Installation](#installation) | [Getting Started](#getting-started) | [Contributing](#contributing) | [License](#license)
+
+Send and receive faxes in Node / Javascript with the [InterFAX REST API](https://www.interfax.net/en/dev/rest/reference).
 
 ## Installation
 
-### Via Nuget
+This library targets .NET 4.5.2 and can be installed via Nuget :
 
-...
+```
+Install-Package InterFAX.Api
+```
 
-### By direct download
+## Getting started
 
-1. Download the library at https://github.com/interfax/interfax-csharp/releases/latest
-2. ...
 
-## Usage
+# Usage
 
-...
+[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Files](#files)
 
-## Examples
+## Client
 
-Samples demonstrating the usage of this library can be found at the following locations:
+The client follows the [12-factor](http://12factor.net/config) apps principle and can be either set directly, via configuration files or environment variables.
 
-### C# faxing samples
+```csharp
+using InterFAX.Api;
 
-* Basic samples: https://github.com/interfax/interfax-csharp-samples
-* More advanced usage: https://www.interfax.net/en/dev/csharp
+// Initialize using parameters
+var interfax = new InterFAX(username: '...', password: '...');
 
-## Documentation
+// Initialize using App.config or Environment variables (both have the same key)
+// NB : App.config will take precedence over environment variables.
+// <appSettings>
+//   <add key="INTERFAX_USERNAME" value="username"/>
+//   <add key="INTERFAX_PASSWORD" value="username"/>
+// </appSettings>
 
-* A 'Getting Started' guide is available at [TBD](#)
-* More advanced topics are covered at [TBD](#)
-* Documentation of the REST API can be found at https://www.interfax.net/en/dev/rest/reference
+var interfax = new InterFAX();
+```
 
-## Support
+All connections are established over HTTPS.
 
-Support can be received through the following channels:
+## Account
 
-* The InterFAX developer forum at https://www.interfax.net/en/forum/dev
-* Our dedicated developer support desk at dev@interfax.net
+### Balance
+
+`InterFAX.Api.Account.GetBalance();`
+
+Determine the remaining faxing credits in your account.
+
+```csharp
+var interfax = new InterFAX();
+
+var balance = await interfax.Account.GetBalance();
+Console.WriteLine($"Account balance is {balance}"); //=> Account balance is 9.86
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/3001)
+
+## Outbound
+
+[Send](#send-fax) | [Get list](#get-outbound-fax-list) | [Get completed list](#get-completed-fax-list) | [Get record](#get-outbound-fax-record) | [Get image](#get-outbound-fax-image) | [Cancel fax](#cancel-a-fax) | [Search](#search-fax-list)
+
+### Send fax
+
+`.outbound.deliver(options, callback);`
+
+Submit a fax to a single destination number.
+
+There are a few ways to send a fax. One way is to directly provide a file path or url.
+
+```csharp
+// with a path
+var fax = await interfax.Outbound.Deliver(new DeliveryOptions {
+  faxNumber: '+11111111112',
+  file: 'folder/fax.txt'
+}).then(fax => {
+  console.log(fax) //=> fax object
+});
+
+// or with a URL
+interfax.outbound.deliver({
+  faxNumber: '+11111111112',
+  file: 'https://s3.aws.com/example/fax.pdf'
+}).then(...);
+```
+
+InterFAX supports over 20 file types including HTML, PDF, TXT, Word, and many more. For a full list see the [Supported File Types](https://www.interfax.net/en/help/supported_file_types) documentation.
+
+The returned object is a plain object with just an `Id`. You can use this Id to load more information, get the image, or cancel the sending of the fax.
+
+```csharp
+var fax = await 
+interfax.outbound.deliver({
+  faxNumber: '+11111111112',
+  file: 'folder/fax.txt'
+}).then(fax => {
+  return interfax.outbound.cancel(fax.id);
+}).then(success => {
+  //=> now the fax is cancelled
+});;
+```
+
+Additionally you can create a [`File`](#files) with binary data and pass this in as well.
+
+```js
+let data = fs.readFileSync('fax.pdf');
+let file = interfax.files.create(data, mime_type: 'application/pdf');
+
+interfax.outbound.deliver({
+  faxNumber: "+11111111112",
+  file: file
+}).then(...);
+```
+
+To send multiple files just pass in an array of strings and [`File`](#files) objects.
+
+```js
+interfax.outbound.deliver({
+  faxNumber: "+11111111112",
+  files: ['file://fax.pdf', 'https://s3.aws.com/example/fax.pdf']
+}).then(...);
+```
+
+Under the hood every path and string is turned into a  [`File`](#files) object. For more information see [the documentation](#files) for this class.
+
+Additionally this API will automatically detect large files and upload them in chunks using the [Documents API](#documents).
+
+**Options:** [`contact`, `postponeTime`, `retriesToPerform`, `csid`, `pageHeader`, `reference`, `pageSize`, `fitToPage`, `pageOrientation`, `resolution`, `rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
+
+**Alias**: `interfax.deliver`
+
+---
+
+### Get outbound fax list
+
+`interfax.outbound.all(options, callback);`
+
+Get a list of recent outbound faxes (which does not include batch faxes).
+
+```js
+interfax.outbound.all({
+  limit: 5
+}).then(faxes => {
+  console.log(faxes); //=> an array of fax objects
+});
+```
+
+**Options:** [`limit`, `lastId`, `sortOrder`, `userId`](https://www.interfax.net/en/dev/rest/reference/2920)
+
+---
+
+### Get completed fax list
+
+`interfax.outbound.completed(array_of_ids, callback);`
+
+Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
+
+```js
+interfax.outbound.completed([123, 234])
+  .then(faxes => {
+    console.log(faxes); //=> an array of fax objects
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2972)
+
+----
+
+### Get outbound fax record
+
+`interfax.outbound.find(fax_id, callback);`
+
+Retrieves information regarding a previously-submitted fax, including its current status.
+
+```js
+interfax.outbound.find(123456)
+  .then(fax => {
+    console.log(fax); //=> fax object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2921)
+
+---
+
+### Get outbound fax image
+
+`interfax.outbound.image(fax_id, callback);`
+
+Retrieve the fax image (TIFF file) of a submitted fax.
+
+```js
+interfax.outbound.image(123456)
+  .then(image => {
+    console.log(image.data); //=> TIFF image data
+    image.save('file.tiff'); //=> saves image to file
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2941)
+
+----
+
+### Cancel a fax
+
+`interfax.outbound.cancel(fax_id, callback);`
+
+Cancel a fax in progress.
+
+```js
+interfax.outbound.cancel(123456)
+  .then(fax => {
+    console.log(fax); //=> fax object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2939)
+
+----
+
+### Search fax list
+
+`interfax.outbound.search(options, callback);`
+
+Search for outbound faxes.
+
+```js
+interfax.outbound.search({
+  faxNumber: '+1230002305555'
+}).then(faxes => {
+  console.log(faxes); //=> an array of fax objects
+});
+```
+
+**Options:** [`ids`, `reference`, `dateFrom`, `dateTo`, `status`, `userId`, `faxNumber`, `limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2959)
+
+## Inbound
+
+[Get list](#get-inbound-fax-list) | [Get record](#get-inbound-fax-record) | [Get image](#get-inbound-fax-image) | [Get emails](#get-forwarding-emails) | [Mark as read](#mark-as-readunread) | [Resend to email](#resend-inbound-fax)
+
+### Get inbound fax list
+
+`interfax.inbound.all(options, callback);`
+
+Retrieves a user's list of inbound faxes. (Sort order is always in descending ID).
+
+```js
+interfax.inbound.all({
+  limit: 5
+}).then(faxes => {
+  console.log(faxes); //=> an array of fax objects
+});
+```
+
+**Options:** [`unreadOnly`, `limit`, `lastId`, `allUsers`](https://www.interfax.net/en/dev/rest/reference/2935)
+
+---
+
+### Get inbound fax record
+
+`interfax.inbound.find(fax_id, callback);`
+
+Retrieves a single fax's metadata (receive time, sender number, etc.).
+
+```js
+interfax.inbound.find(123456)
+  .then(fax => {
+    console.log(fax); //=> fax object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2938)
+
+---
+
+### Get inbound fax image
+
+`interfax.inbound.image(fax_id, callback);`
+
+Retrieves a single fax's image.
+
+```js
+interfax.inbound.image(123456)
+  .then(image => {
+    console.log(image.data); //=> TIFF image data
+    image.save('file.tiff'); //=> saves image to file
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2937)
+
+---
+
+### Get forwarding emails
+
+`interfax.inbound.emails(fax_id, callback);`
+
+Retrieve the list of email addresses to which a fax was forwarded.
+
+```js
+interfax.inbound.emails(123456)
+  .then(emails => {
+    console.log(emails); //=> a list of email objects
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2930)
+
+---
+
+### Mark as read/unread
+
+`interfax.inbound.mark(fax_id, is_read, callback);`
+
+Mark a transaction as read/unread.
+
+```js
+// mark as read
+interfax.inbound.mark(123456, true)
+  .then((success) => {
+    console.log(success); // boolean
+  });
+
+// mark as unread
+interfax.inbound.mark(123456, false)
+  .then((success) => {
+    console.log(success); // boolean
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2936)
+
+### Resend inbound fax
+
+`interfax.inbound.resend(fax_id, to_email, callback);`
+
+Resend an inbound fax to a specific email address.
+
+```js
+// resend to the email(s) to which the fax was previously forwarded
+interfax.inbound.resend(123456)
+  .then((success) => {
+    console.log(success); // boolean
+  });
+
+// resend to a specific address
+interfax.inbound.resend(123456, 'test@example.com')
+  .then((success) => {
+    console.log(success); // boolean
+  });
+=> true
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2929)
+
+---
+
+## Documents
+
+[Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
+
+Documents allow for uploading of large files up to 20MB in 200kb chunks. In general you do no need to use this API yourself as the [`outbound.deliver`](#send-fax) method will automatically detect large files and upload them in chunks as documents.
+
+If you do wish to do this yourself the following example shows how you could upload a file in 500 byte chunks:
+
+```js
+import fs from 'fs';
+
+let upload = function(cursor = 0, document, data) {
+  if (cursor >= data.length) { return };
+  let chunk = data.slice(cursor, cursor+500);
+  let next_cursor = cursor+Buffer.byteLength(chunk);
+
+  interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
+    .then(() => { upload(next_cursor, document, data); });
+}
+
+fs.readFile('tests/test.pdf', function(err, data){
+  interfax.documents.create('test.pdf', Buffer.byteLength(data))
+    .then(document => { upload(0, document, data); });
+});
+```
+
+### Create Documents
+
+`interfax.documents.create(name, size, options, callback);`
+
+Create a document upload session, allowing you to upload large files in chunks.
+
+```js
+interfax.documents.create('large_file.pdf', 231234)
+  .then(document => {
+    console.log(document.id); // the ID of the document created
+  });
+```
+
+**Options:** [`disposition`, `sharing`](https://www.interfax.net/en/dev/rest/reference/2967)
+
+---
+
+### Upload chunk
+
+`interfax.documents.upload(id, range_start, range_end, chunk, callback);`
+
+Upload a chunk to an existing document upload session.
+
+```js
+interfax.documents.upload(123456, 0, 999, "....binary-data....")
+  .then(document => {
+    console.log(document);
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2966)
+
+---
+
+### Get document list
+
+`interfax.documents.all(options, callback);`
+
+Get a list of previous document uploads which are currently available.
+
+```js
+interfax.documents.all({
+  offset: 10
+}).then(documents => {
+  console.log(documents); //=> a list of documents
+});
+```
+
+**Options:** [`limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2968)
+
+---
+
+### Get document status
+
+`interfax.documents.find(document_id, callback);`
+
+Get the current status of a specific document upload.
+
+```js
+interfax.documents.find(123456)
+  .then(document => {
+    console.log(document); //=> a document object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2965)
+
+---
+
+### Cancel document
+
+`interfax.documents.cancel(document_id, callback);`
+
+Cancel a document upload and tear down the upload session, or delete a previous upload.
+
+```js
+interfax.documents.cancel(123456)
+  .then(success => {
+    console.log(success); //=> boolean
+  })
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2964)
+
+---
+
+## Files
+
+This class is used by `interfax.outbound.deliver` to turn every URL, path and binary data into a uniform format, ready to be sent out to the InterFAX API. Under the hood it automatically uploads large files in chunks using the [Documents](#documents) API.
+
+It is most useful for sending binary data to the `.deliver` method.
+
+```js
+interfax.files.create('....binary data.....', { mimeType: 'application/pdf' })
+  .then(file => {
+    console.log(file.header); //=> 'Content-Type: application/pdf'
+    console.log(file.body);   //=> ....binary data.....
+    interfax.outbound.deliver(faxNumber: '+1111111111112', file: file);
+  });
+```
+
+Additionally it can be used to turn a URL or path into a valid object as well, though the `.deliver` method does this conversion automatically.
+
+```js
+// a file by path
+interfax.files.create('foo/bar.pdf');
+
+// a file by url
+interfax.files.create('https://foo.com/bar.html');
+```
 
 ## Contributing
-To contribute to the library, docs, or examples available here on Github, [create an issue](https://github.com/interfax/interfax-dotnet/issues) or a pull request.
+
+ 1. **Fork** the repo on GitHub
+ 2. **Clone** the project to your own machine
+ 3. **Commit** changes to your own branch
+ 4. **Push** your work back up to your fork
+ 5. Submit a **Pull request** so that we can review your changes
 
 ## License
 
-Copyright (c) 2016 Interfax Communications Ltd
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This library is released under the [MIT License](LICENSE).
