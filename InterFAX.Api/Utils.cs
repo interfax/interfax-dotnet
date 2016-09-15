@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -28,6 +29,16 @@ namespace InterFAX.Api
             {
                 output.Write(buffer, 0, len);
             }
+        }
+
+        /// <summary>
+        /// Convert an input string to camelCase.
+        /// </summary>
+        public static string ToCamelCase(this string input)
+        {
+            var camelCased = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(input.ToLowerInvariant().Trim()).Replace("_", "").Replace("-", "").Replace(".", "").Replace(" ", "");
+            if (camelCased.Length < 2) return camelCased;
+            return char.ToLowerInvariant(camelCased[0]) + camelCased.Substring(1);
         }
     }
 }

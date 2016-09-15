@@ -59,10 +59,16 @@
     <Compile Include="Dtos\OutboundDocument.cs" />
     <Compile Include="Dtos\OutboundFaxResult.cs" />
     <Compile Include="Dtos\OutboundFaxSummary.cs" />
+    <Compile Include="Dtos\PageOrientation.cs" />
+    <Compile Include="Dtos\PageRendering.cs" />
+    <Compile Include="Dtos\PageResolution.cs" />
+    <Compile Include="Dtos\PageSize.cs" />
+    <Compile Include="FaxDocument.cs" />
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="InterFAX.cs" />
     <Compile Include="Inbound.cs" />
     <Compile Include="Inbound.ListOptions.cs" />
+    <Compile Include="Dtos\MediaTypeMapping.cs" />
     <Compile Include="Outbound.ListOptions.cs" />
     <Compile Include="Outbound.cs" />
     <Compile Include="Dtos\OutboundFax.cs" />

@@ -77,11 +77,17 @@ namespace InterFAX.Api
         /// <summary>
         /// Submit a fax to a single destination number.
         /// </summary>
-        public async Task<Uri> SendFax(SendOptions options)
+        public async Task<Uri> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
         {
-            throw new NotImplementedException();
+            var content = new MultipartContent();
+            foreach(var faxDocument in faxDocuments)
+                content.Add(faxDocument.ToHttpContent());
+            var response = await _interfax.HttpClient.PostAsync("/outbound/faxes", options.ToDictionary(), content);
+            return response.Headers.Location;
         }
+        #endregion
 
+        #region Modify Existing Faxes
         /// <summary>
         /// Cancel a fax in progress.
         /// </summary>

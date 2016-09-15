@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using InterFAX.Api.Dtos;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace InterFAX.Api
 {
@@ -62,7 +66,48 @@ namespace InterFAX.Api
 
             HttpClient = messageHandler == null ? new HttpClient() : new HttpClient(messageHandler);
             HttpClient.BaseAddress = new Uri("https://rest.interfax.net/");
-            HttpClient.DefaultRequestHeaders.Add("Authorization", new List<string> { $"Basic {Utils.Base64Encode($"{username}:{password}")}" });
+            HttpClient.DefaultRequestHeaders.Add("Authorization",
+                new List<string> {$"Basic {Utils.Base64Encode($"{username}:{password}")}"});
+        }
+
+        private Dictionary<string, string> _supportedMediaTypes;
+        /// <summary>
+        /// The list of media types which InterFAX currently supports.
+        /// Makes a call to the REST API to find them.
+        /// </summary>
+        public Dictionary<string, string> SupportedMediaTypes
+        {
+            get
+            {
+                if (_supportedMediaTypes == null)
+                {
+                    var mappings =
+                        HttpClient.GetResourceAsync<List<MediaTypeMapping>>("/outbound/help/mediatype").Result;
+                    _supportedMediaTypes = mappings.ToDictionary(mapping => mapping.FileType,
+                        mapping => mapping.MediaType);
+                }
+                return _supportedMediaTypes;
+            }
+        }
+
+        public IFaxDocument CreateFaxDocument(Uri fileUri)
+        {
+            return new UriDocument(fileUri);
+        }
+
+        public IFaxDocument CreateFaxDocument(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException(filePath);
+
+            var extension = Path.GetExtension(filePath) ?? "*";
+            extension = extension.TrimStart('.');
+
+            var mediaType = SupportedMediaTypes.Keys.Contains(extension)
+                ? SupportedMediaTypes[extension]
+                : "application/octet-stream";
+
+            return new FileDocument(filePath, mediaType);
         }
     }
 }

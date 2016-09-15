@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -102,6 +103,64 @@ namespace InterFAX.Api.Test.Integration
             {
                 var response = _interfax.Outbound.HideFax(messageId).Result;
             });
+        }
+
+        [Test]
+        public void can_send_fax()
+        {
+            var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
+
+            var faxDocuments = new List<IFaxDocument> {_interfax.CreateFaxDocument(Path.Combine(path, "test.pdf"))};
+            var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
+            {
+                FaxNumber = "+442086090368",
+
+            }).Result;
+        }
+
+        [Test]
+        public void can_send_multiple_inline_faxes()
+        {
+            var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
+
+            var faxDocuments = new List<IFaxDocument>
+            {
+                _interfax.CreateFaxDocument(Path.Combine(path, "test.pdf")),
+                _interfax.CreateFaxDocument(Path.Combine(path, "test.html")),
+                _interfax.CreateFaxDocument(Path.Combine(path, "test.txt"))
+            };
+
+            var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
+            {
+                FaxNumber = "+442086090368",
+
+            }).Result;
+        }
+
+        [Test]
+        public void can_send_multiple_mixed_faxes()
+        {
+            var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
+
+            var faxDocuments = new List<IFaxDocument>
+            {
+                _interfax.CreateFaxDocument(Path.Combine(path, "test.pdf")),
+                _interfax.CreateFaxDocument(new Uri("https://www.interfax.net/en/dev/rest/reference/2918")),
+            };
+
+            var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
+            {
+                FaxNumber = "+442086090368",
+
+            }).Result;
+        }
+
+        [Test]
+        public void can_get_media_type_mappings()
+        {
+            var mappings = _interfax.SupportedMediaTypes;
+            Assert.NotNull(mappings);
+            Assert.True(mappings.ContainsKey("pptx"));
         }
     }
 }

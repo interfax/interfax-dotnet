@@ -27,9 +27,9 @@ namespace InterFAX.Api
             throw new ApiException(response.StatusCode, await response.ToError());
         }
 
-        public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, Dictionary<string, string> options = null)
+        public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, Dictionary<string, string> options = null, HttpContent content = null)
         {
-            var task = httpClient.PostAsync(requestUri.AddOptions(options), new StringContent(""));
+            var task = httpClient.PostAsync(requestUri.AddOptions(options), content ?? new StringContent(""));
             var response = await task;
             if (response.IsSuccessStatusCode) return response;
 

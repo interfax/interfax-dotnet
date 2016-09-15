@@ -53,6 +53,10 @@
     <Compile Include="UtilsTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\testfiles\test.pdf">
+      <Link>test.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config.example" />
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -62,6 +66,16 @@
       <Project>{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}</Project>
       <Name>InterFAX.Api</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\testfiles\test.html">
+      <Link>test.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\testfiles\test.txt">
+      <Link>test.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
