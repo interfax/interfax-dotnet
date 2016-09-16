@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -68,6 +69,7 @@ namespace InterFAX.Api
 
             HttpClient = messageHandler == null ? new HttpClient() : new HttpClient(messageHandler);
             HttpClient.BaseAddress = new Uri("https://rest.interfax.net/");
+            HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.Add("Authorization",
                 new List<string> {$"Basic {Utils.Base64Encode($"{username}:{password}")}"});
 

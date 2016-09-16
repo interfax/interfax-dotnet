@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using InterFAX.Api.Dtos;
@@ -30,6 +31,18 @@ namespace InterFAX.Api
         public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, IOptions options = null, HttpContent content = null)
         {
             var task = httpClient.PostAsync(requestUri.AddOptions(options), content ?? new StringContent(""));
+            var response = await task;
+            if (response.IsSuccessStatusCode) return response;
+
+            throw new ApiException(response.StatusCode, await response.ToError());
+        }
+
+        public static async Task<HttpResponseMessage> PostRangeAsync(this HttpClient httpClient, string requestUri, ByteArrayContent content, RangeHeaderValue range)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            request.Headers.Range = range;
+            request.Content = content;
+            var task = httpClient.SendAsync(request);
             var response = await task;
             if (response.IsSuccessStatusCode) return response;
 
