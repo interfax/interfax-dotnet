@@ -1,0 +1,8 @@
+language: csharp
+solution: InterFAX.Api.sln
+install:
+  - nuget restore InterFAX.Api.sln
+  - nuget install NUnit.Runners -Version 3.4.1 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release InterFAX.Api.sln
+  - mono ./testrunner/NUnit.Runners.3.4.1/tools/nunit-console.exe ./InterFAX.Api.Test.Unit/bin/Release/InterFAX.Api.Test.Unit.dll
