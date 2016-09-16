@@ -102,12 +102,14 @@ namespace InterFAX.Api.Test.Unit
             {
                 ExpectedHttpMethod = HttpMethod.Post,
                 ExpectedContent = "",
+                ExpectedLocationHeader = new Uri("https://rest.interfax.net/outbound/faxes/2"),
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend")
             };
 
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
-            var response = _interfax.Outbound.ResendFax(1).Result;
+            var faxId = _interfax.Outbound.ResendFax(1).Result;
+            Assert.AreEqual(1, faxId);
             Assert.That(_handler.ExpectedUriWasVisited());
         }
 
@@ -118,17 +120,19 @@ namespace InterFAX.Api.Test.Unit
             {
                 ExpectedHttpMethod = HttpMethod.Post,
                 ExpectedContent = "",
+                ExpectedLocationHeader = new Uri("https://rest.interfax.net/outbound/faxes/2"),
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend?faxNumber=123456789")
             };
 
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
-            var response = _interfax.Outbound.ResendFax(1, "123456789").Result;
+            var faxId = _interfax.Outbound.ResendFax(1, "123456789").Result;
+            Assert.AreEqual(2, faxId);
             Assert.That(_handler.ExpectedUriWasVisited());
         }
 
         [Test]
-        public void ResendFax_returns_location_header()
+        public void ResendFax_returns_fax_id()
         {
             _handler = new MockHttpMessageHandler
             {
@@ -141,8 +145,8 @@ namespace InterFAX.Api.Test.Unit
 
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
-            var response = _interfax.Outbound.ResendFax(1, "123456789").Result;
-            Assert.AreEqual(_handler.ExpectedLocationHeader, response);
+            var faxId = _interfax.Outbound.ResendFax(1, "123456789").Result;
+            Assert.AreEqual(1, faxId);
             Assert.That(_handler.ExpectedUriWasVisited());
         }
 

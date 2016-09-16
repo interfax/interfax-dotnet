@@ -31,7 +31,7 @@ namespace InterFAX.Api.Test.Unit
 
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
-            var actual = _interfax.Outbound.Documents.GetList(new Documents.ListOptions
+            var actual = _interfax.Outbound.Documents.GetUploadSessions(new Documents.ListOptions
             {
                 Limit = 10,
                 Offset = 5
@@ -51,7 +51,7 @@ namespace InterFAX.Api.Test.Unit
 
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
-            var actual = _interfax.Outbound.Documents.GetList().Result;
+            var actual = _interfax.Outbound.Documents.GetUploadSessions().Result;
             Assert.That(_handler.ExpectedUriWasVisited());
         }
 

@@ -62,7 +62,7 @@ namespace InterFAX.Api
         /// Get a list of previous document upload sessions which are currently available.
         /// </summary>
         /// <param name="listOptions"></param>
-        public async Task<IEnumerable<UploadSession>> GetList(ListOptions listOptions = null)
+        public async Task<IEnumerable<UploadSession>> GetUploadSessions(ListOptions listOptions = null)
         {
             return await _interfax.HttpClient.GetResourceAsync<IEnumerable<UploadSession>>(ResourceUri, listOptions);
         }
@@ -82,10 +82,10 @@ namespace InterFAX.Api
         }
 
         /// <summary>
-        /// Get a single upload session status object.
+        /// Get a single upload session object.
         /// </summary>
         /// <param name="sessionId"></param>
-        public async Task<UploadSession> GetUploadSessionStatus(string sessionId)
+        public async Task<UploadSession> GetUploadSession(string sessionId)
         {
             return await _interfax.HttpClient.GetResourceAsync<UploadSession>($"{ResourceUri}/{sessionId}");
         }
@@ -108,10 +108,23 @@ namespace InterFAX.Api
             return await _interfax.HttpClient.PostRangeAsync($"{ResourceUri}/{sessionId}", content, range);
         }
 
-        public void UploadDocument(string sessionId, string filePath)
+        /// <summary>
+        /// Upload a document to be attached to a fax.
+        /// </summary>
+        /// <param name="filePath">The full path of the file to be uploaded.</param>
+        /// <returns>The upload sessionId of the uploaded document.</returns>
+        public UploadSession UploadDocument(string filePath)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Could not find file : {filePath}", filePath);
+
+            var fileInfo = new FileInfo(filePath);
+
+            var sessionId = CreateUploadSession(new UploadSessionOptions
+            {
+                Name = fileInfo.Name,
+                Size = (int) fileInfo.Length
+            }).Result;
 
             using (var fileStream = File.OpenRead(filePath))
             {
@@ -133,6 +146,8 @@ namespace InterFAX.Api
                     });
                 }
             }
+
+            return GetUploadSession(sessionId).Result;
         }
 
         /// <summary>

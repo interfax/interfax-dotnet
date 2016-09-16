@@ -60,7 +60,7 @@
     <Compile Include="Dtos\Error.cs" />
     <Compile Include="Dtos\ForwardingEmail.cs" />
     <Compile Include="Dtos\InboundFax.cs" />
-    <Compile Include="Dtos\UploadSessionStatus.cs" />
+    <Compile Include="Dtos\UploadSession.cs" />
     <Compile Include="Dtos\OutboundFaxResult.cs" />
     <Compile Include="Dtos\OutboundFaxSummary.cs" />
     <Compile Include="Dtos\PageOrientation.cs" />

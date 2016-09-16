@@ -76,16 +76,25 @@ namespace InterFAX.Api
 
         #region Sending Faxes
         /// <summary>
-        /// Submit a fax to a single destination number.
+        /// Submit a fax with multiple documents to a destination number.
         /// </summary>
         /// <returns>The messageId of the newly created fax.</returns>
-        public async Task<string> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
+        public async Task<int> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
         {
             var content = new MultipartContent();
             foreach(var faxDocument in faxDocuments)
                 content.Add(faxDocument.ToHttpContent());
             var response = await _interfax.HttpClient.PostAsync(ResourceUri, options, content);
-            return response.Headers.Location.Segments.Last();
+            return Convert.ToInt32(response.Headers.Location.Segments.Last());
+        }
+
+        /// <summary>
+        /// Submit a fax with a single document to a destination number.
+        /// </summary>
+        /// <returns>The messageId of the newly created fax.</returns>
+        public async Task<int> SendFax(IFaxDocument faxDocument, SendOptions options)
+        {
+            return await SendFax(new List<IFaxDocument> {faxDocument}, options);
         }
         #endregion
 
@@ -108,12 +117,12 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to resend.</param>
         /// <param name="faxNumber">(optional) The new destination fax number to which this fax should be sent.</param>
         /// <returns>The messageId of the newly created fax.</returns>
-        public async Task<string> ResendFax(int id, string faxNumber = null)
+        public async Task<int> ResendFax(int id, string faxNumber = null)
         {
             var requestUri = $"{ResourceUri}/{id}/resend";
             if (!string.IsNullOrEmpty(faxNumber)) requestUri += $"?faxNumber={faxNumber}";
             var response = await _interfax.HttpClient.PostAsync(requestUri);
-            return response.Headers.Location.Segments.Last();
+            return Convert.ToInt32(response.Headers.Location.Segments.Last());
         }
 
         /// <summary>

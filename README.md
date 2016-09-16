@@ -20,7 +20,7 @@ Install-Package InterFAX.Api
 
 # Usage
 
-[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Files](#files)
+[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents)
 
 ## Client
 
@@ -30,7 +30,7 @@ The client follows the [12-factor](http://12factor.net/config) apps principle an
 using InterFAX.Api;
 
 // Initialize using parameters
-var interfax = new InterFAX(username: '...', password: '...');
+var interfax = new InterFAX(username: "...", password: "...");
 
 // Initialize using App.config or Environment variables (both have the same key)
 // NB : App.config will take precedence over environment variables.
@@ -48,7 +48,7 @@ All connections are established over HTTPS.
 
 ### Balance
 
-`InterFAX.Api.Account.GetBalance();`
+`async Task<decimal> GetBalance();`
 
 Determine the remaining faxing credits in your account.
 
@@ -67,104 +67,65 @@ Console.WriteLine($"Account balance is {balance}"); //=> Account balance is 9.86
 
 ### Send fax
 
-`.outbound.deliver(options, callback);`
+`async Task<int> SendFax(IFaxDocument faxDocument, SendOptions options)`
+`async Task<int> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)`
 
-Submit a fax to a single destination number.
+Submit a fax to a single destination number. Returns the messageId of the fax.
 
-There are a few ways to send a fax. One way is to directly provide a file path or url.
+There are a few ways to send a fax. You can directly provide a file path or a url, which can be a web page anywhere or a link to a previously uploaded document resource (see [Documents](#documents)).
 
 ```csharp
-// with a path
-var fax = await interfax.Outbound.Deliver(new DeliveryOptions {
-  faxNumber: '+11111111112',
-  file: 'folder/fax.txt'
-}).then(fax => {
-  console.log(fax) //=> fax object
-});
+var options = new SendOptions { FaxNumber = "+11111111112"};
 
-// or with a URL
-interfax.outbound.deliver({
-  faxNumber: '+11111111112',
-  file: 'https://s3.aws.com/example/fax.pdf'
-}).then(...);
+// with a path
+var fileDocument = interfax.Documents.BuildFaxDocument(@".\folder\fax.txt");
+var messageId = await interfax.SendFax(faxDocument, options);
+
+// with a URL
+var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.pdf"));
+var messageId = await interfax.SendFax(urlDocument, options);
+
+// or both at once
+var documents = new List<IFaxDocument> { fileDocument, urlDocument };
+var messageId = await interfax.SendFax(documents, options)
 ```
 
 InterFAX supports over 20 file types including HTML, PDF, TXT, Word, and many more. For a full list see the [Supported File Types](https://www.interfax.net/en/help/supported_file_types) documentation.
+The supported types are mapped to media types in the file SupportedMediaTypes.json - this can be modified by hand.
 
-The returned object is a plain object with just an `Id`. You can use this Id to load more information, get the image, or cancel the sending of the fax.
+The returned object is the Id of the fax. Use this Id to load more information, get the image, or cancel the sending of the fax.
 
 ```csharp
-var fax = await 
-interfax.outbound.deliver({
-  faxNumber: '+11111111112',
-  file: 'folder/fax.txt'
-}).then(fax => {
-  return interfax.outbound.cancel(fax.id);
-}).then(success => {
-  //=> now the fax is cancelled
-});;
+var result = await interfax.CancelFax(messageId);
+
+// result in this case is just "OK".
 ```
-
-Additionally you can create a [`File`](#files) with binary data and pass this in as well.
-
-```js
-let data = fs.readFileSync('fax.pdf');
-let file = interfax.files.create(data, mime_type: 'application/pdf');
-
-interfax.outbound.deliver({
-  faxNumber: "+11111111112",
-  file: file
-}).then(...);
-```
-
-To send multiple files just pass in an array of strings and [`File`](#files) objects.
-
-```js
-interfax.outbound.deliver({
-  faxNumber: "+11111111112",
-  files: ['file://fax.pdf', 'https://s3.aws.com/example/fax.pdf']
-}).then(...);
-```
-
-Under the hood every path and string is turned into a  [`File`](#files) object. For more information see [the documentation](#files) for this class.
-
-Additionally this API will automatically detect large files and upload them in chunks using the [Documents API](#documents).
-
-**Options:** [`contact`, `postponeTime`, `retriesToPerform`, `csid`, `pageHeader`, `reference`, `pageSize`, `fitToPage`, `pageOrientation`, `resolution`, `rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
-
-**Alias**: `interfax.deliver`
+**SendOptions:** [`FaxNumber`, `Contact`, `PostponeTime`, `RetriesToPerform`, `Csid`, `PageHeader`, `Reference`, `PageSize`, `FitToPage`, `PageOrientation`, `Resolution`, `Rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
 
 ---
 
 ### Get outbound fax list
 
-`interfax.outbound.all(options, callback);`
+`async Task<IEnumerable<OutboundFaxSummary>> GetList(Outbound.ListOptions options = null);`
 
 Get a list of recent outbound faxes (which does not include batch faxes).
 
-```js
-interfax.outbound.all({
-  limit: 5
-}).then(faxes => {
-  console.log(faxes); //=> an array of fax objects
-});
+```csharp
+var faxes = await interfax.Outbound.GetList();
 ```
 
-**Options:** [`limit`, `lastId`, `sortOrder`, `userId`](https://www.interfax.net/en/dev/rest/reference/2920)
+**Outbound.ListOptions:** [`Limit`, `LastId`, `SortOrder`, `UserId`](https://www.interfax.net/en/dev/rest/reference/2920)
 
 ---
 
 ### Get completed fax list
 
-`interfax.outbound.completed(array_of_ids, callback);`
+`async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(IEnumerable<int> ids = null)`
 
 Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
 
-```js
-interfax.outbound.completed([123, 234])
-  .then(faxes => {
-    console.log(faxes); //=> an array of fax objects
-  });
+```csharp
+var completed = await interfax.Outbound.Completed([123, 234]);
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2972)
@@ -173,33 +134,32 @@ interfax.outbound.completed([123, 234])
 
 ### Get outbound fax record
 
-`interfax.outbound.find(fax_id, callback);`
+`async Task<OutboundFaxSummary> GetFaxRecord(int id);`
 
 Retrieves information regarding a previously-submitted fax, including its current status.
 
-```js
-interfax.outbound.find(123456)
-  .then(fax => {
-    console.log(fax); //=> fax object
-  });
+```csharp
+var fax = interfax.Outbound.GetFaxRecord(123456)
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2921)
 
 ---
 
-### Get outbound fax image
+### Get outbound fax image stream
 
-`interfax.outbound.image(fax_id, callback);`
+`async Task<Stream> GetFaxImageStream(int id);`
 
-Retrieve the fax image (TIFF file) of a submitted fax.
+Retrieve the fax image stream (TIFF file) of a submitted fax.
 
-```js
-interfax.outbound.image(123456)
-  .then(image => {
-    console.log(image.data); //=> TIFF image data
-    image.save('file.tiff'); //=> saves image to file
-  });
+```csharp
+using (var imageStream = await _interfax.Outbound.GetFaxImageStream(662208217))
+{
+    using (var fileStream = File.Create(@".\image.tiff"))
+    {
+        InterFAX.Utils.CopyStream(imageStream, fileStream);
+    }
+}
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2941)
@@ -208,15 +168,14 @@ interfax.outbound.image(123456)
 
 ### Cancel a fax
 
-`interfax.outbound.cancel(fax_id, callback);`
+`async Task<string> CancelFax(int id)`
 
 Cancel a fax in progress.
 
-```js
-interfax.outbound.cancel(123456)
-  .then(fax => {
-    console.log(fax); //=> fax object
-  });
+```csharp
+var result = interfax.Outbound.CancelFax(123456)
+
+// => OK
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2939)
@@ -225,19 +184,17 @@ interfax.outbound.cancel(123456)
 
 ### Search fax list
 
-`interfax.outbound.search(options, callback);`
+`async Task<IEnumerable<OutboundFax>> SearchFaxes(SearchOptions searchOptions)`
 
 Search for outbound faxes.
 
-```js
-interfax.outbound.search({
-  faxNumber: '+1230002305555'
-}).then(faxes => {
-  console.log(faxes); //=> an array of fax objects
+```csharp
+var faxes = await interfax.Outbound.Search(new SearchOptions {
+  faxNumber = '+1230002305555'
 });
 ```
 
-**Options:** [`ids`, `reference`, `dateFrom`, `dateTo`, `status`, `userId`, `faxNumber`, `limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2959)
+**Options:** [`Ids`, `Reference`, `DateFrom`, `DateTo`, `Status`, `UserId`, `FaxNumber`, `Limit`, `Offset`](https://www.interfax.net/en/dev/rest/reference/2959)
 
 ## Inbound
 
@@ -245,51 +202,46 @@ interfax.outbound.search({
 
 ### Get inbound fax list
 
-`interfax.inbound.all(options, callback);`
+`async Task<IEnumerable<InboundFax>> GetList(ListOptions listOptions = null)`
 
 Retrieves a user's list of inbound faxes. (Sort order is always in descending ID).
 
-```js
-interfax.inbound.all({
-  limit: 5
-}).then(faxes => {
-  console.log(faxes); //=> an array of fax objects
-});
+```csharp
+var faxes = await interfax.Inbound.GetList(new ListOptions { UnreadOnly = true });
 ```
 
-**Options:** [`unreadOnly`, `limit`, `lastId`, `allUsers`](https://www.interfax.net/en/dev/rest/reference/2935)
+**Options:** [`UnreadOnly`, `Limit`, `LastId`, `AllUsers`](https://www.interfax.net/en/dev/rest/reference/2935)
 
 ---
 
 ### Get inbound fax record
 
-`interfax.inbound.find(fax_id, callback);`
+`async Task<InboundFax> GetFaxRecord(int id)`
 
 Retrieves a single fax's metadata (receive time, sender number, etc.).
 
-```js
-interfax.inbound.find(123456)
-  .then(fax => {
-    console.log(fax); //=> fax object
-  });
+```csharp
+var fax = await interfax.Inbound.GetFaxRecord(123456);
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2938)
 
 ---
 
-### Get inbound fax image
+### Get inbound fax image stream
 
-`interfax.inbound.image(fax_id, callback);`
+`async Task<Stream> GetFaxImageStream(int id)`
 
 Retrieves a single fax's image.
 
-```js
-interfax.inbound.image(123456)
-  .then(image => {
-    console.log(image.data); //=> TIFF image data
-    image.save('file.tiff'); //=> saves image to file
-  });
+```csharp
+using (var imageStream = await _interfax.Inbound.GetFaxImageStream(291704306))
+{
+    using (var fileStream = File.Create(@".\image.tiff"))
+    {
+        Utils.CopyStream(imageStream, fileStream);
+    }
+}
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2937)
@@ -298,15 +250,14 @@ interfax.inbound.image(123456)
 
 ### Get forwarding emails
 
-`interfax.inbound.emails(fax_id, callback);`
+`async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(int id)`
 
 Retrieve the list of email addresses to which a fax was forwarded.
 
-```js
-interfax.inbound.emails(123456)
-  .then(emails => {
-    console.log(emails); //=> a list of email objects
-  });
+```csharp
+var emails = await interfax.Inbound.GetForwardingEmails(12345);
+foreach(var email in emails)
+	Console.WriteLine($"{email.EmailAddress}, {email.MessageStatus}, {email.CompletionTime.ToString("s")}")
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2930)
@@ -315,45 +266,41 @@ interfax.inbound.emails(123456)
 
 ### Mark as read/unread
 
-`interfax.inbound.mark(fax_id, is_read, callback);`
+`async Task<string> MarkRead(int id)`
+`async Task<string> MarkUnread(int id)`
 
 Mark a transaction as read/unread.
 
-```js
+```csharp
 // mark as read
-interfax.inbound.mark(123456, true)
-  .then((success) => {
-    console.log(success); // boolean
-  });
+var result = interfax.Inbound.MarkRead(123456);
+
+// => OK
 
 // mark as unread
-interfax.inbound.mark(123456, false)
-  .then((success) => {
-    console.log(success); // boolean
-  });
+var result = interfax.Inbound.MarkUnread(123456);
+
+// => OK
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2936)
 
 ### Resend inbound fax
 
-`interfax.inbound.resend(fax_id, to_email, callback);`
+`async Task<string> Resend(int id, string emailAddress = null)`
 
-Resend an inbound fax to a specific email address.
+Resend an inbound fax, optionally to a specific email address.
 
-```js
+```csharp
 // resend to the email(s) to which the fax was previously forwarded
-interfax.inbound.resend(123456)
-  .then((success) => {
-    console.log(success); // boolean
-  });
+var result = await interfax.Inbound.Resend(123456);
+
+// => OK
 
 // resend to a specific address
-interfax.inbound.resend(123456, 'test@example.com')
-  .then((success) => {
-    console.log(success); // boolean
-  });
-=> true
+var result = await interfax.Inbound.Resend(123456) "test@example.com")
+
+// => OK
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2929)
@@ -364,138 +311,121 @@ interfax.inbound.resend(123456, 'test@example.com')
 
 [Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
 
-Documents allow for uploading of large files up to 20MB in 200kb chunks. In general you do no need to use this API yourself as the [`outbound.deliver`](#send-fax) method will automatically detect large files and upload them in chunks as documents.
+Document upload sessions allow for uploading of large files up to 20MB in chunks of arbitrary size.
 
-If you do wish to do this yourself the following example shows how you could upload a file in 500 byte chunks:
+You can do this quite simply by calling :
 
-```js
-import fs from 'fs';
+`UploadSession UploadDocument(string filePath)`
 
-let upload = function(cursor = 0, document, data) {
-  if (cursor >= data.length) { return };
-  let chunk = data.slice(cursor, cursor+500);
-  let next_cursor = cursor+Buffer.byteLength(chunk);
+```csharp
+var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
+```
 
-  interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
-    .then(() => { upload(next_cursor, document, data); });
+The Uri property of the returned session object can be used when sending a fax.
+
+If you want to control the chunking yourself, the following example shows how you could upload a file in 500 byte chunks:
+
+```csharp
+var fileInfo = new FileInfo("large.pdf");
+
+var sessionId = CreateUploadSession(new UploadSessionOptions
+{
+    Name = fileInfo.Name,
+    Size = (int) fileInfo.Length
+}).Result;
+
+using (var fileStream = File.OpenRead(filePath))
+{
+    var buffer = new byte[500];
+    int len;
+    while ((len = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+    {
+        var data = new byte[len];
+        Array.Copy(buffer, data, len);
+        var response = UploadDocumentChunk(sessionId, fileStream.Position - len, data).Result;
+        if (response.StatusCode == HttpStatusCode.Accepted) continue;
+        if (response.StatusCode == HttpStatusCode.OK) break;
+    }
 }
-
-fs.readFile('tests/test.pdf', function(err, data){
-  interfax.documents.create('test.pdf', Buffer.byteLength(data))
-    .then(document => { upload(0, document, data); });
-});
 ```
 
 ### Create Documents
 
-`interfax.documents.create(name, size, options, callback);`
+`async Task<string> CreateUploadSession(UploadSessionOptions options)`
 
 Create a document upload session, allowing you to upload large files in chunks.
 
-```js
-interfax.documents.create('large_file.pdf', 231234)
-  .then(document => {
-    console.log(document.id); // the ID of the document created
-  });
+```csharp
+var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options)
 ```
 
-**Options:** [`disposition`, `sharing`](https://www.interfax.net/en/dev/rest/reference/2967)
+**Options:** [`Disposition`, `Sharing`](https://www.interfax.net/en/dev/rest/reference/2967)
 
 ---
 
 ### Upload chunk
 
-`interfax.documents.upload(id, range_start, range_end, chunk, callback);`
+`async Task<HttpResponseMessage> UploadDocumentChunk(string sessionId, long offset, byte[] data)`
 
-Upload a chunk to an existing document upload session.
+Upload a chunk to an existing document upload session. The offset refers to the offset in the unchunked file not the data parameter.
 
-```js
-interfax.documents.upload(123456, 0, 999, "....binary-data....")
-  .then(document => {
-    console.log(document);
-  });
+```csharp
+var response = UploadDocumentChunk(sessionId, offset, data).Result;
+
+// HttpStatusCode.OK (done) or HttpStatusCode.Accepted (unfinished)
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2966)
 
 ---
 
-### Get document list
+### Get upload session list
 
-`interfax.documents.all(options, callback);`
+`async Task<IEnumerable<UploadSession>> GetUploadSessions(ListOptions listOptions = null)`
 
 Get a list of previous document uploads which are currently available.
 
-```js
-interfax.documents.all({
-  offset: 10
-}).then(documents => {
-  console.log(documents); //=> a list of documents
-});
+```csharp
+var list = _interfax.Outbound.Documents.GetUploadSessions(new Documents.ListOptions
+                {
+                    Offset = 10,
+                    Limit = 5
+                }).Result;
 ```
 
-**Options:** [`limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2968)
+**Options:** [`Limit`, `Offset`](https://www.interfax.net/en/dev/rest/reference/2968)
 
 ---
 
-### Get document status
+### Get upload session status
 
-`interfax.documents.find(document_id, callback);`
+`async Task<UploadSession> GetUploadSession(string sessionId)`
 
-Get the current status of a specific document upload.
+Get the current status of a specific document upload session.
 
-```js
-interfax.documents.find(123456)
-  .then(document => {
-    console.log(document); //=> a document object
-  });
+```csharp
+var session = interfax.Documents.GetUploadSession(123456);
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2965)
 
 ---
 
-### Cancel document
+### Cancel document upload session
 
 `interfax.documents.cancel(document_id, callback);`
 
 Cancel a document upload and tear down the upload session, or delete a previous upload.
 
-```js
-interfax.documents.cancel(123456)
-  .then(success => {
-    console.log(success); //=> boolean
-  })
+```csharp
+var result = await interfax.Outbound.Documents.CancelUploadSession(sessionId);
+
+// => OK
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2964)
 
 ---
-
-## Files
-
-This class is used by `interfax.outbound.deliver` to turn every URL, path and binary data into a uniform format, ready to be sent out to the InterFAX API. Under the hood it automatically uploads large files in chunks using the [Documents](#documents) API.
-
-It is most useful for sending binary data to the `.deliver` method.
-
-```js
-interfax.files.create('....binary data.....', { mimeType: 'application/pdf' })
-  .then(file => {
-    console.log(file.header); //=> 'Content-Type: application/pdf'
-    console.log(file.body);   //=> ....binary data.....
-    interfax.outbound.deliver(faxNumber: '+1111111111112', file: file);
-  });
-```
-
-Additionally it can be used to turn a URL or path into a valid object as well, though the `.deliver` method does this conversion automatically.
-
-```js
-// a file by path
-interfax.files.create('foo/bar.pdf');
-
-// a file by url
-interfax.files.create('https://foo.com/bar.html');
-```
 
 ## Contributing
 

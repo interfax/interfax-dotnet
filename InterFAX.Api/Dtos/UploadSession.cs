@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -33,6 +34,12 @@ namespace InterFAX.Api.Dtos
         /// Fully-qualified resource URI of the document.
         /// </summary>
         public Uri Uri { get; set; }
+
+        /// <summary>
+        /// The session Id.
+        /// </summary>
+        [JsonIgnore]
+        public string Id => Uri == null ? null : Uri.Segments.Last();
 
         /// <summary>
         /// The time the document was created.

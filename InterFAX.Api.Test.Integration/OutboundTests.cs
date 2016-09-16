@@ -73,7 +73,7 @@ namespace InterFAX.Api.Test.Integration
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                var response = _interfax.Outbound.CancelFax(messageId).Result;
+                var result = _interfax.Outbound.CancelFax(messageId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
@@ -97,23 +97,33 @@ namespace InterFAX.Api.Test.Integration
             });
         }
 
-        [Ignore("")]
         [Test]
         public void can_hide_fax()
         {
-            const int messageId = 661900007;
-
-            Assert.DoesNotThrow(() =>
+            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions
             {
-                var response = _interfax.Outbound.HideFax(messageId).Result;
-            });
+                FaxNumber = "+442086090368",
+
+            }).Result;
+
+            // verify it shows up in the list
+            var faxes = _interfax.Outbound.SearchFaxes(new SearchOptions { Ids = new [] {faxId}}).Result;
+            Assert.AreEqual(1, faxes.Count());
+
+            // hide the fax
+            var response = _interfax.Outbound.HideFax(faxId).Result;
+
+            // search again
+            faxes = _interfax.Outbound.SearchFaxes(new SearchOptions { Ids = new[] { faxId } }).Result;
+            Assert.AreEqual(0, faxes.Count());
         }
 
         [Test]
         public void can_send_fax()
         {
-            var faxDocuments = new List<IFaxDocument> {_interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"))};
-            var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
+            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var response = _interfax.Outbound.SendFax(faxDocument, new SendOptions
             {
                 FaxNumber = "+442086090368",
 

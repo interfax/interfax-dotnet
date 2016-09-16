@@ -33,7 +33,7 @@ namespace InterFAX.Api.Test.Integration
         {
             Assert.DoesNotThrow(() =>
             {
-                var list = _interfax.Outbound.Documents.GetList().Result;
+                var list = _interfax.Outbound.Documents.GetUploadSessions().Result;
             });
         }
 
@@ -42,7 +42,7 @@ namespace InterFAX.Api.Test.Integration
         {
             Assert.DoesNotThrow(() =>
             {
-                var list = _interfax.Outbound.Documents.GetList(new Documents.ListOptions
+                var list = _interfax.Outbound.Documents.GetUploadSessions(new Documents.ListOptions
                 {
                     Offset = 10,
                     Limit = 5
@@ -64,7 +64,7 @@ namespace InterFAX.Api.Test.Integration
             var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options).Result;
             Assert.NotNull(sessionId);
 
-            var sessionStatus = _interfax.Outbound.Documents.GetUploadSessionStatus(sessionId).Result;
+            var sessionStatus = _interfax.Outbound.Documents.GetUploadSession(sessionId).Result;
             Assert.NotNull(sessionStatus);
             Assert.AreEqual(options.Name, sessionStatus.FileName);
             Assert.AreEqual(options.Size, sessionStatus.FileSize);
@@ -77,7 +77,7 @@ namespace InterFAX.Api.Test.Integration
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                var response = _interfax.Outbound.Documents.GetUploadSessionStatus(sessionId).Result;
+                var response = _interfax.Outbound.Documents.GetUploadSession(sessionId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
@@ -104,30 +104,57 @@ namespace InterFAX.Api.Test.Integration
                 Sharing = DocumentSharing.Private
             };
 
-            // Create the upload session.
-            var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options).Result;
-            Assert.NotNull(sessionId);
-
-            // Check the session exists.
-            var sessionStatus = _interfax.Outbound.Documents.GetUploadSessionStatus(sessionId).Result;
-            Assert.NotNull(sessionStatus);
-            Assert.AreEqual(options.Name, sessionStatus.FileName);
-            Assert.AreEqual(options.Size, sessionStatus.FileSize);
-            Assert.AreEqual(options.Disposition, sessionStatus.Disposition);
-            Assert.AreEqual(options.Sharing, sessionStatus.Sharing);
-            Assert.AreEqual(DocumentStatus.Created, sessionStatus.Status);
-
             // Upload the document.
-            _interfax.Outbound.Documents.UploadDocument(sessionId, fileInfo.FullName);
+            var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
 
             // Delete the session
-            var result = _interfax.Outbound.Documents.CancelUploadSession(sessionId).Result;
+            var result = _interfax.Outbound.Documents.CancelUploadSession(session.Id).Result;
             Assert.AreEqual("OK", result);
 
             // Check that the session no longer exists
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                var response = _interfax.Outbound.Documents.GetUploadSessionStatus(sessionId).Result;
+                var response = _interfax.Outbound.Documents.GetUploadSession(session.Id).Result;
+            });
+
+            var apiException = exception.InnerExceptions[0] as ApiException;
+            Assert.NotNull(apiException);
+
+            var error = apiException.Error;
+            Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
+            Assert.AreEqual(-1062, error.Code);
+            Assert.AreEqual("Wrong uploaded document resource", error.Message);
+            Assert.IsNull(error.MoreInfo);
+        }
+
+        [Test]
+        public void can_fax_small_document()
+        {
+            var fileInfo = new FileInfo(Path.Combine(_testPath, "test.pdf"));
+
+            var options = new Documents.UploadSessionOptions
+            {
+                Name = fileInfo.Name,
+                Size = (int)fileInfo.Length,
+                Disposition = DocumentDisposition.SingleUse,
+                Sharing = DocumentSharing.Private
+            };
+
+            // Upload the document.
+            var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
+
+            // Fax the document
+            var faxDocument = _interfax.Documents.BuildFaxDocument(session.Uri);
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions {FaxNumber = "+442086090368" });
+
+            // Delete the session
+            var result = _interfax.Outbound.Documents.CancelUploadSession(session.Id).Result;
+            Assert.AreEqual("OK", result);
+
+            // Check that the session no longer exists
+            var exception = Assert.Throws<AggregateException>(() =>
+            {
+                var response = _interfax.Outbound.Documents.GetUploadSession(session.Id).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
