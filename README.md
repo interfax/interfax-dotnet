@@ -63,7 +63,7 @@ Console.WriteLine($"Account balance is {balance}"); //=> Account balance is 9.86
 
 ## Outbound
 
-[Send](#send-fax) | [Get list](#get-outbound-fax-list) | [Get completed list](#get-completed-fax-list) | [Get record](#get-outbound-fax-record) | [Get image](#get-outbound-fax-image) | [Cancel fax](#cancel-a-fax) | [Search](#search-fax-list)
+[Send](#send-fax) | [Get list](#get-outbound-fax-list) | [Get completed list](#get-completed-fax-list) | [Get record](#get-outbound-fax-record) | [Get image stream](#get-outbound-fax-image-stream) | [Cancel fax](#cancel-a-fax) | [Search](#search-fax-list)
 
 ### Send fax
 
@@ -198,7 +198,7 @@ var faxes = await interfax.Outbound.Search(new SearchOptions {
 
 ## Inbound
 
-[Get list](#get-inbound-fax-list) | [Get record](#get-inbound-fax-record) | [Get image](#get-inbound-fax-image) | [Get emails](#get-forwarding-emails) | [Mark as read](#mark-as-readunread) | [Resend to email](#resend-inbound-fax)
+[Get list](#get-inbound-fax-list) | [Get record](#get-inbound-fax-record) | [Get image stream](#get-inbound-fax-image-stream) | [Get emails](#get-forwarding-emails) | [Mark as read](#mark-as-readunread) | [Resend to email](#resend-inbound-fax)
 
 ### Get inbound fax list
 
@@ -309,7 +309,7 @@ var result = await interfax.Inbound.Resend(123456) "test@example.com")
 
 ## Documents
 
-[Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
+[Create document upload session](#create-document-upload-session) | [Upload chunk](#upload-chunk) | [Get upload session list](#get-upload-session-list) | [Status](#get-upload-session-status) | [Cancel](#cancel-document-upload-session)
 
 Document upload sessions allow for uploading of large files up to 20MB in chunks of arbitrary size.
 
@@ -349,7 +349,7 @@ using (var fileStream = File.OpenRead(filePath))
 }
 ```
 
-### Create Documents
+### Create Document Upload Session
 
 `async Task<string> CreateUploadSession(UploadSessionOptions options)`
 
@@ -379,7 +379,7 @@ var response = UploadDocumentChunk(sessionId, offset, data).Result;
 
 ---
 
-### Get upload session list
+### Get Upload Session List
 
 `async Task<IEnumerable<UploadSession>> GetUploadSessions(ListOptions listOptions = null)`
 
