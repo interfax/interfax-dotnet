@@ -1,6 +1,7 @@
 language: csharp
 solution: InterFAX.Api.sln
 install:
+  - cp ./InterFAX.Api.Test.Integration/App.config.example ./InterFAX.Api.Test.Integration/App.config
   - nuget restore InterFAX.Api.sln
   - nuget install NUnit.Runners -Version 3.4.1 -OutputDirectory testrunner
 script:
