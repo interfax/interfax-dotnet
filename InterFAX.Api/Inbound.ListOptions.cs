@@ -5,7 +5,7 @@ namespace InterFAX.Api
 {
     public partial class Inbound
     {
-        public class ListOptions
+        public class ListOptions : IOptions
         {
             /// <summary>
             /// Return only unread faxes?

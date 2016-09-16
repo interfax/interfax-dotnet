@@ -52,11 +52,15 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="ApiException.cs" />
+    <Compile Include="Documents.UploadSessionOptions.cs" />
     <Compile Include="Documents.ListOptions.cs" />
+    <Compile Include="Dtos\DocumentDisposition.cs" />
+    <Compile Include="Dtos\DocumentSharing.cs" />
+    <Compile Include="Dtos\DocumentStatus.cs" />
     <Compile Include="Dtos\Error.cs" />
     <Compile Include="Dtos\ForwardingEmail.cs" />
     <Compile Include="Dtos\InboundFax.cs" />
-    <Compile Include="Dtos\OutboundDocument.cs" />
+    <Compile Include="Dtos\UploadSessionStatus.cs" />
     <Compile Include="Dtos\OutboundFaxResult.cs" />
     <Compile Include="Dtos\OutboundFaxSummary.cs" />
     <Compile Include="Dtos\PageOrientation.cs" />
@@ -69,6 +73,7 @@
     <Compile Include="Inbound.cs" />
     <Compile Include="Inbound.ListOptions.cs" />
     <Compile Include="Dtos\MediaTypeMapping.cs" />
+    <Compile Include="IOptions.cs" />
     <Compile Include="Outbound.ListOptions.cs" />
     <Compile Include="Outbound.cs" />
     <Compile Include="Dtos\OutboundFax.cs" />
@@ -82,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SupportedMediaTypes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

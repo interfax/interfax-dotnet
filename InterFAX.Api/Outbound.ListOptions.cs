@@ -4,7 +4,7 @@ namespace InterFAX.Api
 {
     public partial class Outbound
     {
-        public class ListOptions
+        public class ListOptions : IOptions
         {
             /// <summary>
             /// How many transactions to return.

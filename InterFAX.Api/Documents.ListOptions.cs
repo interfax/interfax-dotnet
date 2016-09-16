@@ -4,7 +4,7 @@ namespace InterFAX.Api
 {
     public partial class Documents
     {
-        public class ListOptions
+        public class ListOptions : IOptions
         {
             /// <summary>
             /// How many document references to return.

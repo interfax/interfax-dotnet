@@ -1,11 +1,13 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace InterFAX.Api.Dtos
 {
     /// <summary>
-    /// Meta data about a previous document upload.
+    /// Meta data about a document upload session.
     /// </summary>
-    public class OutboundDocument
+    public class UploadSession
     {
         /// <summary>
         /// The id of the user who uploaded the document.
@@ -45,16 +47,16 @@ namespace InterFAX.Api.Dtos
         /// <summary>
         /// One of created, partiallyUploaded, uploading, ready, deleting
         /// </summary>
-        public string Status { get; set; }
+        public DocumentStatus Status { get; set; }
 
         /// <summary>
         /// singleUse, multiUse, permanent
         /// </summary>
-        public string Disposition { get; set; }
+        public DocumentDisposition Disposition { get; set; }
 
         /// <summary>
         /// private, shared
         /// </summary>
-        public string Sharing { get; set; }
+        public DocumentSharing Sharing { get; set; }
     }
 }

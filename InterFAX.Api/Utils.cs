@@ -40,5 +40,13 @@ namespace InterFAX.Api
             if (camelCased.Length < 2) return camelCased;
             return char.ToLowerInvariant(camelCased[0]) + camelCased.Substring(1);
         }
+
+        /// <summary>
+        /// Convert an enum value to camelCase.
+        /// </summary>
+        public static string ToCamelCase(this Enum input)
+        {
+            return input.ToString().ToCamelCase();
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace InterFAX.Api
     /// <summary>
     /// Options which can be provided when submitting a fax.
     /// </summary>
-    public class SendOptions
+    public class SendOptions : IOptions
     {
         /// <summary>
         /// A single fax number, e.g: +1-212-3456789.
@@ -97,11 +97,11 @@ namespace InterFAX.Api
             if (!string.IsNullOrEmpty(PageHeader)) options.Add("pageHeader", PageHeader);
             if (!string.IsNullOrEmpty(Reference)) options.Add("reference", Reference);
             if (!string.IsNullOrEmpty(ReplyAddress)) options.Add("replyAddress", ReplyAddress);
-            if (PageSize.HasValue) options.Add("pageSize", PageSize.ToString().ToCamelCase());
+            if (PageSize.HasValue) options.Add("pageSize", PageSize.ToCamelCase());
             if (ShouldScale.HasValue) options.Add("fitToPage", ShouldScale.Value? "scale" : "noscale");
-            if (PageOrientation.HasValue) options.Add("pageOrientation", PageOrientation.ToString().ToCamelCase());
-            if (PageResolution.HasValue) options.Add("resolution", PageResolution.ToString().ToCamelCase());
-            if (PageRendering.HasValue) options.Add("rendering", PageRendering.ToString().ToCamelCase());
+            if (PageOrientation.HasValue) options.Add("pageOrientation", PageOrientation.ToCamelCase());
+            if (PageResolution.HasValue) options.Add("resolution", PageResolution.ToCamelCase());
+            if (PageRendering.HasValue) options.Add("rendering", PageRendering.ToCamelCase());
             return options;
         }
     }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace InterFAX.Api
 {
-    public class SearchOptions
+    public class SearchOptions : IOptions
     {
         /// <summary>
         /// List of fax IDs.

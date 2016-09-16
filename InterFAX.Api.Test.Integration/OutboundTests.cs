@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace InterFAX.Api.Test.Integration
@@ -14,6 +12,12 @@ namespace InterFAX.Api.Test.Integration
     public class OutboundTests
     {
         private InterFAX _interfax;
+        private readonly string _testPath;
+
+        public OutboundTests()
+        {
+            _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
+        }
 
         [SetUp]
         public void Setup()
@@ -108,9 +112,7 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_send_fax()
         {
-            var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
-
-            var faxDocuments = new List<IFaxDocument> {_interfax.CreateFaxDocument(Path.Combine(path, "test.pdf"))};
+            var faxDocuments = new List<IFaxDocument> {_interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"))};
             var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
             {
                 FaxNumber = "+442086090368",
@@ -125,9 +127,9 @@ namespace InterFAX.Api.Test.Integration
 
             var faxDocuments = new List<IFaxDocument>
             {
-                _interfax.CreateFaxDocument(Path.Combine(path, "test.pdf")),
-                _interfax.CreateFaxDocument(Path.Combine(path, "test.html")),
-                _interfax.CreateFaxDocument(Path.Combine(path, "test.txt"))
+                _interfax.Documents.BuildFaxDocument(Path.Combine(path, "test.pdf")),
+                _interfax.Documents.BuildFaxDocument(Path.Combine(path, "test.html")),
+                _interfax.Documents.BuildFaxDocument(Path.Combine(path, "test.txt"))
             };
 
             var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
@@ -144,8 +146,8 @@ namespace InterFAX.Api.Test.Integration
 
             var faxDocuments = new List<IFaxDocument>
             {
-                _interfax.CreateFaxDocument(Path.Combine(path, "test.pdf")),
-                _interfax.CreateFaxDocument(new Uri("https://www.interfax.net/en/dev/rest/reference/2918")),
+                _interfax.Documents.BuildFaxDocument(Path.Combine(path, "test.pdf")),
+                _interfax.Documents.BuildFaxDocument(new Uri("https://en.wikipedia.org/wiki/Representational_state_transfer")),
             };
 
             var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
@@ -153,14 +155,6 @@ namespace InterFAX.Api.Test.Integration
                 FaxNumber = "+442086090368",
 
             }).Result;
-        }
-
-        [Test]
-        public void can_get_media_type_mappings()
-        {
-            var mappings = _interfax.SupportedMediaTypes;
-            Assert.NotNull(mappings);
-            Assert.True(mappings.ContainsKey("pptx"));
         }
     }
 }

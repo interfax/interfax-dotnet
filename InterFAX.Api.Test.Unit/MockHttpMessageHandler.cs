@@ -49,11 +49,7 @@ namespace InterFAX.Api.Test.Unit
 
             var expectedQuery = HttpUtility.ParseQueryString(ExpectedUri.Query);
             var actualQuery = HttpUtility.ParseQueryString(ActualUri.Query);
-            foreach (var option in expectedQuery.AllKeys)
-            {
-                verified = verified && actualQuery[option] != null && expectedQuery[option] == actualQuery[option];
-            }
-            return verified;
+            return expectedQuery.AllKeys.Aggregate(verified, (current, option) => current && actualQuery[option] != null && expectedQuery[option] == actualQuery[option]);
         }
     }
 }

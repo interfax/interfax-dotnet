@@ -8,6 +8,7 @@ namespace InterFAX.Api
     public partial class Inbound
     {
         private readonly InterFAX _interfax;
+        private const string ResourceUri = "/inbound/faxes";
 
         internal Inbound(InterFAX interfax)
         {
@@ -21,8 +22,7 @@ namespace InterFAX.Api
         /// <param name="listOptions"></param>
         public async Task<IEnumerable<InboundFax>> GetList(ListOptions listOptions = null)
         {
-            var options = listOptions == null ? new Dictionary<string, string>() : listOptions.ToDictionary();
-            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<InboundFax>>("/inbound/faxes", options);
+            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<InboundFax>>(ResourceUri, listOptions);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
         public async Task<InboundFax> GetFaxRecord(int id)
         {
-            return await _interfax.HttpClient.GetResourceAsync<InboundFax>($"/inbound/faxes/{id}");
+            return await _interfax.HttpClient.GetResourceAsync<InboundFax>($"{ResourceUri}/{id}");
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
         public async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(int id)
         {
-            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<ForwardingEmail>>($"/inbound/faxes/{id}/emails");
+            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<ForwardingEmail>>($"{ResourceUri}/{id}/emails");
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
         public async Task<Stream> GetFaxImageStream(int id)
         {
-            return await _interfax.HttpClient.GetStreamAsync($"/inbound/faxes/{id}/image");
+            return await _interfax.HttpClient.GetStreamAsync($"{ResourceUri}/{id}/image");
         }
         #endregion
 
@@ -60,7 +60,7 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to mark as read.</param>
         public async Task<string> MarkRead(int id)
         {
-            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark");
+            var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/mark");
             return response.ReasonPhrase;
         }
 
@@ -70,7 +70,7 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to mark as read.</param>
         public async Task<string> MarkUnread(int id)
         {
-            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/mark?unread=true");
+            var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/mark?unread=true");
             return response.ReasonPhrase;
         }
 
@@ -81,10 +81,9 @@ namespace InterFAX.Api
         /// <param name="emailAddress">Optional email address to forward the inbound fax on to.</param>
         public async Task<string> Resend(int id, string emailAddress = null)
         {
-            var options = string.IsNullOrEmpty(emailAddress)
-                ? null
-                : new Dictionary<string, string> {{"emailAddress", emailAddress}};
-            var response = await _interfax.HttpClient.PostAsync($"/inbound/faxes/{id}/resend", options);
+            var requestUri = $"{ResourceUri}/{id}/resend";
+            if (!string.IsNullOrEmpty(emailAddress)) requestUri += $"?emailAddress={emailAddress}";
+            var response = await _interfax.HttpClient.PostAsync(requestUri);
             return response.ReasonPhrase;
         }
         #endregion

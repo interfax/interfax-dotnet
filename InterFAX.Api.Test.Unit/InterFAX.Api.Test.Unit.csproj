@@ -59,6 +59,7 @@
     <Compile Include="DocumentsTests.cs" />
     <Compile Include="InterFAXTests.cs" />
     <Compile Include="InboundListOptionsTests.cs" />
+    <Compile Include="UploadSessionOptionsTests.cs" />
     <Compile Include="OutboundListOptionsTests.cs" />
     <Compile Include="MockHttpMessageHandler.cs" />
     <Compile Include="InboundTests.cs" />

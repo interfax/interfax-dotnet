@@ -1,0 +1,134 @@
+[
+  {
+    "MediaType": "application/vnd.oasis.opendocument.formula",
+    "FileType": "odf"
+  },
+  {
+    "MediaType": "application/vnd.oasis.opendocument.text",
+    "FileType": "odt"
+  },
+  {
+    "MediaType": "application/vnd.oasis.opendocument.spreadsheet",
+    "FileType": "ods"
+  },
+  {
+    "MediaType": "application/vnd.oasis.opendocument.presentation",
+    "FileType": "odp"
+  },
+  {
+    "MediaType": "application/vnd.oasis.opendocument.graphics",
+    "FileType": "odg"
+  },
+  {
+    "MediaType": "application/vnd.oasis.opendocument.textmaster",
+    "FileType": "odm"
+  },
+  {
+    "MediaType": "application/msword",
+    "FileType": "doc"
+  },
+  {
+    "MediaType": "application/msword",
+    "FileType": "docx"
+  },
+  {
+    "MediaType": "application/msword",
+    "FileType": "dot"
+  },
+  {
+    "MediaType": "application/xml",
+    "FileType": "xml"
+  },
+  {
+    "MediaType": "application/pdf",
+    "FileType": "pdf"
+  },
+  {
+    "MediaType": "image/tiff",
+    "FileType": "tiff"
+  },
+  {
+    "MediaType": "image/tiff",
+    "FileType": "tif"
+  },
+  {
+    "MediaType": "text/plain",
+    "FileType": "txt"
+  },
+  {
+    "MediaType": "application/vnd.ms-excel",
+    "FileType": "xls"
+  },
+  {
+    "MediaType": "application/vnd.ms-excel",
+    "FileType": "xlsx"
+  },
+  {
+    "MediaType": "text/html",
+    "FileType": "html"
+  },
+  {
+    "MediaType": "text/html",
+    "FileType": "htm"
+  },
+  {
+    "MediaType": "message/rfc822",
+    "FileType": "mht"
+  },
+  {
+    "MediaType": "application/internet-shortcut",
+    "FileType": "url"
+  },
+  {
+    "MediaType": "application/vnd.ms-powerpoint",
+    "FileType": "ppt"
+  },
+  {
+    "MediaType": "application/vnd.ms-powerpoint",
+    "FileType": "pptx"
+  },
+  {
+    "MediaType": "image/gif",
+    "FileType": "gif"
+  },
+  {
+    "MediaType": "image/png",
+    "FileType": "png"
+  },
+  {
+    "MediaType": "image/jpeg",
+    "FileType": "jpeg"
+  },
+  {
+    "MediaType": "image/jpeg",
+    "FileType": "jpg"
+  },
+  {
+    "MediaType": "application/postscript",
+    "FileType": "ps"
+  },
+  {
+    "MediaType": "application/eps",
+    "FileType": "eps"
+  },
+  {
+    "MediaType": "application/rtf",
+    "FileType": "rtf"
+  },
+  {
+    "MediaType": "image/bmp",
+    "FileType": "bmp"
+  },
+  {
+    "MediaType": "application/pcx",
+    "FileType": "pcx"
+  },
+  {
+    "MediaType": "application/snapshot",
+    "FileType": "snp"
+  },
+  {
+    "MediaType": "application/zip",
+    "FileType": "zip"
+  }
+]
