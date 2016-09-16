@@ -109,7 +109,7 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
 
             var faxId = _interfax.Outbound.ResendFax(1).Result;
-            Assert.AreEqual(1, faxId);
+            Assert.AreEqual(2, faxId);
             Assert.That(_handler.ExpectedUriWasVisited());
         }
 
