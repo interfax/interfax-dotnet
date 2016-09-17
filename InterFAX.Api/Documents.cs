@@ -22,21 +22,39 @@ namespace InterFAX.Api
         internal Documents(InterFAX interfax)
         {
             _interfax = interfax;
-
-            // Populate the SupportedMediaTypes collection from a configuration file.
-            // We expect this to be alongside the assembly.
-            var assemblyPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
-            var typesFile = Path.Combine(assemblyPath, "SupportedMediaTypes.json");
-            if (!File.Exists(typesFile))
-                throw new FileNotFoundException("Could not find the SupportedMediaTypes configuration file.");
-
-            var mappings = JsonConvert.DeserializeObject<List<MediaTypeMapping>>(File.ReadAllText(typesFile));
-            SupportedMediaTypes = mappings.ToDictionary(
-                        mapping => mapping.FileType,
-                        mapping => mapping.MediaType);
         }
 
-        public Dictionary<string, string> SupportedMediaTypes { get; set; }
+        private Dictionary<string, string> _supportedMediaTypes;
+        public Dictionary<string, string> SupportedMediaTypes
+        {
+            get
+            {
+                if (_supportedMediaTypes == null)
+                {
+                    var assembly = Assembly.GetAssembly(typeof(Documents));
+                    var assemblyPath = Path.GetDirectoryName(assembly.Location);
+                    var typesFile = Path.Combine(assemblyPath, "SupportedMediaTypes.json");
+
+                    if (!File.Exists(typesFile))
+                    {
+                        // unpack the types file to the assembly path
+                        using (var resource = assembly.GetManifestResourceStream("InterFAX.Api.SupportedMediaTypes.json"))
+                        {
+                            using (var file = new FileStream(typesFile, FileMode.Create, FileAccess.Write))
+                            {
+                                resource.CopyTo(file);
+                            }
+                        }
+                    }
+
+                    var mappings = JsonConvert.DeserializeObject<List<MediaTypeMapping>>(File.ReadAllText(typesFile));
+                    _supportedMediaTypes = mappings.ToDictionary(
+                                mapping => mapping.FileType,
+                                mapping => mapping.MediaType);
+                }
+                return _supportedMediaTypes;
+            }
+        }
 
         public IFaxDocument BuildFaxDocument(Uri fileUri)
         {

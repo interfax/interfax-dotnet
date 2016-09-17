@@ -87,9 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SupportedMediaTypes.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="SupportedMediaTypes.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
