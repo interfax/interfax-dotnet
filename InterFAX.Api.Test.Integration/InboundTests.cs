@@ -8,12 +8,12 @@ namespace InterFAX.Api.Test.Integration
 {
     public class InboundTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
 
         [SetUp]
         public void Setup()
         {
-            _interfax = new InterFAX();
+            _interfax = new FaxClient();
         }
 
         [Test]

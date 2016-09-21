@@ -15,11 +15,11 @@ namespace InterFAX.Api
 {
     public partial class Documents
     {
-        private readonly InterFAX _interfax;
+        private readonly FaxClient _interfax;
         private const string ResourceUri = "/outbound/documents";
         public const int MaxChunkSize = 256 * 1024; //quarter of a MB
 
-        internal Documents(InterFAX interfax)
+        internal Documents(FaxClient interfax)
         {
             _interfax = interfax;
         }

@@ -7,7 +7,7 @@ namespace InterFAX.Api.Test.Unit
     [TestFixture]
     public class AccountTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
 
@@ -22,7 +22,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/accounts/self/ppcards/balance")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Account.GetBalance().Result;
             Assert.AreEqual(_handler.ExpectedUri, _handler.ActualUri);

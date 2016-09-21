@@ -7,10 +7,10 @@ namespace InterFAX.Api
 {
     public partial class Inbound
     {
-        private readonly InterFAX _interfax;
+        private readonly FaxClient _interfax;
         private const string ResourceUri = "/inbound/faxes";
 
-        internal Inbound(InterFAX interfax)
+        internal Inbound(FaxClient interfax)
         {
             _interfax = interfax;
         }

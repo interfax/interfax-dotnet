@@ -5,7 +5,9 @@
 
 [Installation](#installation) | [Getting Started](#getting-started) | [Contributing](#contributing) | [License](#license)
 
-Send and receive faxes in Node / Javascript with the [InterFAX REST API](https://www.interfax.net/en/dev/rest/reference).
+Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_CLI_languages) with the [InterFAX REST API](https://www.interfax.net/en/dev/rest/reference).
+
+(examples are in C#)
 
 ## Installation
 
@@ -30,7 +32,7 @@ The client follows the [12-factor](http://12factor.net/config) apps principle an
 using InterFAX.Api;
 
 // Initialize using parameters
-var interfax = new InterFAX(username: "...", password: "...");
+var interfax = new FaxClient(username: "...", password: "...");
 
 // Initialize using App.config or Environment variables (both have the same key)
 // NB : App.config will take precedence over environment variables.
@@ -39,7 +41,7 @@ var interfax = new InterFAX(username: "...", password: "...");
 //   <add key="INTERFAX_PASSWORD" value="username"/>
 // </appSettings>
 
-var interfax = new InterFAX();
+var interfax = new FaxClient();
 ```
 
 All connections are established over HTTPS.
@@ -53,7 +55,7 @@ All connections are established over HTTPS.
 Determine the remaining faxing credits in your account.
 
 ```csharp
-var interfax = new InterFAX();
+var interfax = new FaxClient();
 
 var balance = await interfax.Account.GetBalance();
 Console.WriteLine($"Account balance is {balance}"); //=> Account balance is 9.86

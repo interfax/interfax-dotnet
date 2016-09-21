@@ -14,7 +14,7 @@ namespace InterFAX.Api.Test.Integration
     [TestFixture]
     public class DocumentsTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
         private readonly string _testPath;
 
         public DocumentsTests()
@@ -25,7 +25,7 @@ namespace InterFAX.Api.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _interfax = new InterFAX();
+            _interfax = new FaxClient();
         }
 
         [Test]

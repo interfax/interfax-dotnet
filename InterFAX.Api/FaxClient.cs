@@ -15,7 +15,7 @@ using Newtonsoft.Json.Converters;
 
 namespace InterFAX.Api
 {
-    public class InterFAX
+    public class FaxClient
     {
         public const string UsernameConfigKey = "INTERFAX_USERNAME";
         public const string PasswordConfigKey = "INTERFAX_PASSWORD";
@@ -33,7 +33,7 @@ namespace InterFAX.Api
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="messageHandler"></param>
-        public InterFAX(string username, string password, HttpMessageHandler messageHandler = null)
+        public FaxClient(string username, string password, HttpMessageHandler messageHandler = null)
         {
             Initialise(username, password, messageHandler);
         }
@@ -41,7 +41,7 @@ namespace InterFAX.Api
         /// <summary>
         /// Initialises the client from the App.config file.
         /// </summary>
-        public InterFAX(HttpMessageHandler messageHandler = null)
+        public FaxClient(HttpMessageHandler messageHandler = null)
         {
             var username = ConfigurationManager.AppSettings[UsernameConfigKey];
             if (string.IsNullOrEmpty(username))

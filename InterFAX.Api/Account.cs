@@ -10,9 +10,9 @@ namespace InterFAX.Api
 {
     public class Account
     {
-        private readonly InterFAX _interfax;
+        private readonly FaxClient _interfax;
 
-        internal Account(InterFAX interfax)
+        internal Account(FaxClient interfax)
         {
             _interfax = interfax;
         }

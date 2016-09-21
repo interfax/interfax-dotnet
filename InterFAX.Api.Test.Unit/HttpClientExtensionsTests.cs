@@ -8,7 +8,7 @@ namespace InterFAX.Api.Test.Unit
     [TestFixture]
     public class HttpClientExtensionsTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
         [Test]
@@ -23,7 +23,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/accounts/self/ppcards/balance")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var exception = Assert.Throws<AggregateException>(() => { var balance = _interfax.Account.GetBalance().Result; });
             Assert.AreEqual(1, exception.InnerExceptions.Count);

@@ -11,7 +11,7 @@ namespace InterFAX.Api.Test.Unit
     [TestFixture]
     public class DocumentsTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
         private readonly string _testPdf;
 
@@ -40,7 +40,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/documents?limit=10&offset=5")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.Documents.GetUploadSessions(new Documents.ListOptions
             {
@@ -60,7 +60,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/documents")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.Documents.GetUploadSessions().Result;
             Assert.That(_handler.ExpectedUriWasVisited());
@@ -75,7 +75,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/help/mediatype")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var faxDocument = _interfax.Documents.BuildFaxDocument(_testPdf);
             Assert.NotNull(faxDocument);
@@ -88,7 +88,7 @@ namespace InterFAX.Api.Test.Unit
         [Test]
         public void can_unpack_and_load_supported_media_types()
         {
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass");
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass");
             var types = _interfax.Documents.SupportedMediaTypes;
             Assert.NotNull(types);
             Assert.That(types.ContainsKey("pdf"));

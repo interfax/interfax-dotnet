@@ -10,7 +10,7 @@ namespace InterFAX.Api.Test.Unit
     [TestFixture]
     public class OutboundTests
     {
-        private InterFAX _interfax;
+        private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
         [Test]
@@ -22,7 +22,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes?lastId=5&limit=10&sortOrder=asc&userId=unit-test-associate")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.GetList(new Outbound.ListOptions
             {
@@ -43,7 +43,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.GetList().Result;
             Assert.That(_handler.ExpectedUriWasVisited());
@@ -58,7 +58,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/image")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.GetFaxImageStream(1).Result;
             Assert.That(_handler.ExpectedUriWasVisited());
@@ -73,7 +73,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/inbound/faxes/1")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetFaxRecord(1).Result;
             Assert.That(_handler.ExpectedUriWasVisited());
@@ -89,7 +89,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/cancel")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var response = _interfax.Outbound.CancelFax(1).Result;
             Assert.That(_handler.ExpectedUriWasVisited());
@@ -106,7 +106,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var faxId = _interfax.Outbound.ResendFax(1).Result;
             Assert.AreEqual(2, faxId);
@@ -124,7 +124,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend?faxNumber=123456789")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var faxId = _interfax.Outbound.ResendFax(1, "123456789").Result;
             Assert.AreEqual(2, faxId);
@@ -143,7 +143,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/resend?faxNumber=123456789")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var faxId = _interfax.Outbound.ResendFax(1, "123456789").Result;
             Assert.AreEqual(1, faxId);
@@ -160,7 +160,7 @@ namespace InterFAX.Api.Test.Unit
                 ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/1/hide")
             };
 
-            _interfax = new InterFAX("unit-test-user", "unit-test-pass", _handler);
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var response = _interfax.Outbound.HideFax(1).Result;
             Assert.That(_handler.ExpectedUriWasVisited());

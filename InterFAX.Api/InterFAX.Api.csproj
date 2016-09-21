@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -69,7 +69,7 @@
     <Compile Include="Dtos\PageSize.cs" />
     <Compile Include="FaxDocument.cs" />
     <Compile Include="HttpClientExtensions.cs" />
-    <Compile Include="InterFAX.cs" />
+    <Compile Include="FaxClient.cs" />
     <Compile Include="Inbound.cs" />
     <Compile Include="Inbound.ListOptions.cs" />
     <Compile Include="Dtos\MediaTypeMapping.cs" />
