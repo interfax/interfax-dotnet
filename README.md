@@ -14,7 +14,7 @@ Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_
 This library targets .NET 4.5.2 and can be installed via Nuget :
 
 ```
-Install-Package InterFAX.Api
+Install-Package InterFAX.Api -Version 1.0.1
 ```
 
 ## Getting started
