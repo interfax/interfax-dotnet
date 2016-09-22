@@ -38,7 +38,7 @@ var interfax = new FaxClient(username: "...", password: "...");
 // NB : App.config will take precedence over environment variables.
 // <appSettings>
 //   <add key="INTERFAX_USERNAME" value="username"/>
-//   <add key="INTERFAX_PASSWORD" value="username"/>
+//   <add key="INTERFAX_PASSWORD" value="password"/>
 // </appSettings>
 
 var interfax = new FaxClient();
