@@ -1,7 +1,7 @@
 
 # InterFAX .NET Library
 
-[![Build Status](https://travis-ci.org/jdpearce/interfax-dotnet.svg?branch=master)](https://travis-ci.org/jdpearce/interfax-dotnet)
+[![Build Status](https://travis-ci.org/interfax/interfax-dotnet.svg?branch=master)](https://travis-ci.org/interfax/interfax-dotnet)
 
 [Installation](#installation) | [Getting Started](#getting-started) | [Contributing](#contributing) | [License](#license)
 
