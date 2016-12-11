@@ -67,9 +67,10 @@ namespace InterFAX.Api
         public string MediaType { get; private set; }
         public FileStream FileStream { get; private set; }
 
-        internal FileStreamDocument(string fileName, FileStream stream, string mediaType)
+        internal FileStreamDocument(string fileName, FileStream fileStream, string mediaType)
         {
             FileName = fileName;
+            FileStream = fileStream;
             MediaType = mediaType;
         }
 

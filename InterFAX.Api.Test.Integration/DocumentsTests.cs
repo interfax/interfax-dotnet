@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using InterFAX.Api.Dtos;
 using NUnit.Framework;
 
@@ -129,12 +125,8 @@ namespace InterFAX.Api.Test.Integration
 
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(session.Uri);
-            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions {FaxNumber = "+442086090368" }).Result;
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
             Assert.True(faxId > 0);
-
-            // Delete the session
-            var result = _interfax.Outbound.Documents.CancelUploadSession(session.Id).Result;
-            Assert.AreEqual("OK", result);
 
             // Check that the session no longer exists
             var exception = Assert.Throws<AggregateException>(() =>
@@ -150,6 +142,19 @@ namespace InterFAX.Api.Test.Integration
             Assert.AreEqual(-1062, error.Code);
             Assert.AreEqual("Wrong uploaded document resource", error.Message);
             Assert.IsNull(error.MoreInfo);
+        }
+
+        [Test]
+        public void can_fax_small_document_as_stream()
+        {
+            int faxId;
+            using (var fileStream = File.OpenRead(Path.Combine(_testPath, "test.pdf")))
+            {
+                // Fax the document
+                var faxDocument = _interfax.Documents.BuildFaxDocument("test.pdf", fileStream);
+                faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+                Assert.True(faxId > 0);
+            }
         }
     }
 }

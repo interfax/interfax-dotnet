@@ -54,26 +54,38 @@ namespace InterFAX.Api.Test.Integration
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
 
-            using (var imageStream = _interfax.Outbound.GetFaxImageStream(662208217).Result)
+            // Fax a document
+            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+            Assert.True(faxId > 0);
+
+            System.Threading.Thread.Sleep(5000);
+
+            using (var imageStream = _interfax.Outbound.GetFaxImageStream(faxId).Result)
             {
                 using (var fileStream = File.Create(filename))
                 {
                     Utils.CopyStream(imageStream, fileStream);
                 }
             }
+
             Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(new FileInfo(filename).Length > 0);
             File.Delete(filename);
         }
 
         [Test]
+        [Ignore("The fax api appears to have changed since this was last run - cancelling a sent fax returns OK.")]
         public void cancelling_already_sent_fax_builds_error_response()
         {
-            const int messageId = 661900007;
+            // Fax the document
+            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+            Assert.True(faxId > 0);
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                var result = _interfax.Outbound.CancelFax(messageId).Result;
+                var result = _interfax.Outbound.CancelFax(faxId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
