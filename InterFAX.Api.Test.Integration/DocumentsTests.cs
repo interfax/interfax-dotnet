@@ -96,14 +96,6 @@ namespace InterFAX.Api.Test.Integration
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "large.pdf"));
 
-            var options = new Documents.UploadSessionOptions
-            {
-                Name = fileInfo.Name,
-                Size = (int) fileInfo.Length,
-                Disposition = DocumentDisposition.SingleUse,
-                Sharing = DocumentSharing.Private
-            };
-
             // Upload the document.
             var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
 
@@ -132,20 +124,13 @@ namespace InterFAX.Api.Test.Integration
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "test.pdf"));
 
-            var options = new Documents.UploadSessionOptions
-            {
-                Name = fileInfo.Name,
-                Size = (int)fileInfo.Length,
-                Disposition = DocumentDisposition.SingleUse,
-                Sharing = DocumentSharing.Private
-            };
-
             // Upload the document.
             var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
 
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(session.Uri);
-            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions {FaxNumber = "+442086090368" });
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions {FaxNumber = "+442086090368" }).Result;
+            Assert.True(faxId > 0);
 
             // Delete the session
             var result = _interfax.Outbound.Documents.CancelUploadSession(session.Id).Result;

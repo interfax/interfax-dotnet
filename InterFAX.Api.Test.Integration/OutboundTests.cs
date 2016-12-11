@@ -95,6 +95,7 @@ namespace InterFAX.Api.Test.Integration
             {
                 var response = _interfax.Outbound.CancelFax(messageId).Result;
             });
+            Assert.NotNull(exception);
         }
 
         [Test]
