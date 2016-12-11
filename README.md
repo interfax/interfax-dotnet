@@ -323,12 +323,24 @@ var result = await interfax.Inbound.Resend(123456) "test@example.com")
 
 Document upload sessions allow for uploading of large files up to 20MB in chunks of arbitrary size.
 
-You can do this quite simply by calling :
+You can do this with either a file path :
 
 `UploadSession UploadDocument(string filePath)`
 
 ```csharp
+var fileInfo = new FileInfo("test.pdf"));
 var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
+```
+
+Or with a file stream :
+
+`UploadSession UploadDocument(string fileName, FileStream fileStream)`
+
+```csharp
+using (var fileStream = File.OpenRead("test.pdf"))
+{
+  var session = _interfax.Outbound.Documents.UploadDocument(filePath, fileStream);
+}
 ```
 
 The Uri property of the returned session object can be used when sending a fax.
@@ -366,7 +378,7 @@ using (var fileStream = File.OpenRead(filePath))
 Create a document upload session, allowing you to upload large files in chunks.
 
 ```csharp
-var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options)
+var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options);
 ```
 
 **Options:** [`Disposition`, `Sharing`](https://www.interfax.net/en/dev/rest/reference/2967)

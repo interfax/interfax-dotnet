@@ -59,6 +59,7 @@ namespace InterFAX.Api.Test.Integration
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
             Assert.True(faxId > 0);
 
+            // Have to pause for a moment as the image isn't immediately available
             System.Threading.Thread.Sleep(5000);
 
             using (var imageStream = _interfax.Outbound.GetFaxImageStream(faxId).Result)
