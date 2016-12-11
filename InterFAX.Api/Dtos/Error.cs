@@ -19,5 +19,10 @@ namespace InterFAX.Api.Dtos
         /// Detailed information about the error.
         /// </summary>
         public string MoreInfo { get; set; }
+        
+        public override string ToString()
+        {
+            return $"Code : [{Code}], Message : [{Message}], MoreInfo : [{MoreInfo}]";
+        }
     }
 }
