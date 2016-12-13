@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using InterFAX.Api.Dtos;
 
 namespace InterFAX.Api
@@ -14,7 +13,7 @@ namespace InterFAX.Api
         public HttpStatusCode StatusCode { get; private set; }
         public Error Error { get; private set; }
 
-        internal ApiException(HttpStatusCode statusCode, Error error)
+        internal ApiException(HttpStatusCode statusCode, Error error) : base($"ApiException : {error}")
         {
             StatusCode = statusCode;
             Error = error;

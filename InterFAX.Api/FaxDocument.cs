@@ -56,4 +56,31 @@ namespace InterFAX.Api
             return content;
         }
     }
+
+
+    /// <summary>
+    /// Represents a fax document from a file stream.
+    /// </summary>
+    public class FileStreamDocument : IFaxDocument
+    {
+        public string FileName { get; private set; }
+        public string MediaType { get; private set; }
+        public FileStream FileStream { get; private set; }
+
+        internal FileStreamDocument(string fileName, FileStream fileStream, string mediaType)
+        {
+            FileName = fileName;
+            FileStream = fileStream;
+            MediaType = mediaType;
+        }
+
+        public HttpContent ToHttpContent()
+        {
+            var fileBytes = new byte[FileStream.Length];
+            FileStream.Read(fileBytes, 0, fileBytes.Length);
+            var content = new ByteArrayContent(fileBytes);
+            content.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaType);
+            return content;
+        }
+    }    
 }

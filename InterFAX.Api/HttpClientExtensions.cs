@@ -16,7 +16,7 @@ namespace InterFAX.Api
             var response = await task;
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsAsync<T>();
 
-            throw new ApiException(response.StatusCode, await response.ToError());        
+            throw new ApiException(response.StatusCode, await response.ToError());
         }
 
         public static async Task<T> PostAsync<T>(this HttpClient httpClient, string requestUri, IOptions options = null)
@@ -73,8 +73,26 @@ namespace InterFAX.Api
 
         private static async Task<Error> ToError(this HttpResponseMessage response)
         {
+            if (response.Content.Headers.ContentLength == 0)
+            {
+                return new Error
+                {
+                    Code = (int)response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    MoreInfo = "No content returned"
+                };
+            }
+
             try { return await response.Content.ReadAsAsync<Error>(); }
-            catch { return new Error { Code = (int)response.StatusCode, Message = await response.Content.ReadAsStringAsync(), MoreInfo = response.ReasonPhrase }; }
+            catch 
+            { 
+                return new Error 
+                { 
+                    Code = (int)response.StatusCode, 
+                    Message = response.ReasonPhrase,
+                    MoreInfo = await response.Content.ReadAsStringAsync()
+                }; 
+            }
         }
     }
 }

@@ -56,11 +56,17 @@ namespace InterFAX.Api
             }
         }
 
+        /// <summary>
+        /// Build an IFaxDocument from a Uri.
+        /// </summary>
         public IFaxDocument BuildFaxDocument(Uri fileUri)
         {
             return new UriDocument(fileUri);
         }
 
+        /// <summary>
+        /// Build an IFaxDocument from a local file.
+        /// </summary>
         public IFaxDocument BuildFaxDocument(string filePath)
         {
             if (!File.Exists(filePath))
@@ -74,6 +80,21 @@ namespace InterFAX.Api
                 : "application/octet-stream";
 
             return new FileDocument(filePath, mediaType);
+        }
+
+        /// <summary>
+        /// Build an IFaxDocument from a FileStream.
+        /// </summary>
+        public IFaxDocument BuildFaxDocument(string fileName, FileStream fileStream)
+        {
+            var extension = Path.GetExtension(fileName) ?? "*";
+            extension = extension.TrimStart('.');
+
+            var mediaType = SupportedMediaTypes.Keys.Contains(extension)
+                ? SupportedMediaTypes[extension]
+                : "application/octet-stream";
+
+            return new FileStreamDocument(fileName, fileStream, mediaType);
         }
 
         /// <summary>
@@ -111,10 +132,10 @@ namespace InterFAX.Api
         /// <summary>
         /// Uploads a chunk of data to the given document upload session.
         /// </summary>
-        /// <param name="sessionId">The id of the upload session.</param>
+        /// <param name="sessionId">The id of an alread existing upload session.</param>
         /// <param name="offset">The starting position of <paramref name="data"/> in the document.</param>
         /// <param name="data">The data to upload.s</param>
-        /// <returns></returns>
+        /// <returns>An HttpResponseMessage</returns>
         public async Task<HttpResponseMessage> UploadDocumentChunk(string sessionId, long offset, byte[] data)
         {
             if (data.Length > MaxChunkSize)
@@ -126,11 +147,55 @@ namespace InterFAX.Api
             return await _interfax.HttpClient.PostRangeAsync($"{ResourceUri}/{sessionId}", content, range);
         }
 
+        /// Uploads a FileStream to the given document upload session.
+        /// </summary>
+        /// <param name="sessionId">The id of an already existing upload session.</param>
+        /// <param name="fileStream">The FileStream to upload.</param> 
+        public void UploadFileStreamToSession(string sessionId, FileStream fileStream)
+        {
+            var buffer = new byte[MaxChunkSize];
+            int len;
+            while ((len = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                var data = new byte[len];
+                Array.Copy(buffer, data, len);
+                var response = UploadDocumentChunk(sessionId, fileStream.Position - len, data).Result;
+                if (response.StatusCode == HttpStatusCode.Accepted) continue;
+                if (response.StatusCode == HttpStatusCode.OK) break;
+
+                throw new ApiException(response.StatusCode, new Error
+                {
+                    Code = (int) response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    MoreInfo = response.Content.ReadAsStringAsync().Result
+                });
+            }
+        }
+
+        /// <summary>
+        /// Upload a document stream to be attached to a fax.
+        /// </summary>
+        /// <param name="fileName">The name of the file to be uploaded.</param>
+        /// <param name="fileStream">The FileStream to be uploaded.</param>
+        /// <returns>The upload session created.</returns>
+        public UploadSession UploadDocument(string fileName, FileStream fileStream)
+        {
+            var sessionId = CreateUploadSession(new UploadSessionOptions
+            {
+                Name = fileName,
+                Size = fileStream.Length
+            }).Result;
+
+            UploadFileStreamToSession(sessionId, fileStream);
+
+            return GetUploadSession(sessionId).Result;            
+        }
+
         /// <summary>
         /// Upload a document to be attached to a fax.
         /// </summary>
         /// <param name="filePath">The full path of the file to be uploaded.</param>
-        /// <returns>The upload sessionId of the uploaded document.</returns>
+        /// <returns>The upload session created.</returns>
         public UploadSession UploadDocument(string filePath)
         {
             if (!File.Exists(filePath))
@@ -146,23 +211,7 @@ namespace InterFAX.Api
 
             using (var fileStream = File.OpenRead(filePath))
             {
-                var buffer = new byte[MaxChunkSize];
-                int len;
-                while ((len = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    var data = new byte[len];
-                    Array.Copy(buffer, data, len);
-                    var response = UploadDocumentChunk(sessionId, fileStream.Position - len, data).Result;
-                    if (response.StatusCode == HttpStatusCode.Accepted) continue;
-                    if (response.StatusCode == HttpStatusCode.OK) break;
-
-                    throw new ApiException(response.StatusCode, new Error
-                    {
-                        Code = (int) response.StatusCode,
-                        Message = response.ReasonPhrase,
-                        MoreInfo = response.Content.ReadAsStringAsync().Result
-                    });
-                }
+                UploadFileStreamToSession(sessionId, fileStream);
             }
 
             return GetUploadSession(sessionId).Result;
@@ -172,7 +221,7 @@ namespace InterFAX.Api
         /// Cancel a document upload session.
         /// </summary>
         /// <param name="sessionId">The identifier of the session to cancel.</param>
-        /// <returns>The Uri of the created session.</returns>
+        /// <returns>The server response content.</returns>
         public async Task<string> CancelUploadSession(string sessionId)
         {
             return await _interfax.HttpClient.DeleteResourceAsync($"{ResourceUri}/{sessionId}");

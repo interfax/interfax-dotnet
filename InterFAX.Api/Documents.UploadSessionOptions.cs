@@ -8,9 +8,9 @@ namespace InterFAX.Api
         public class UploadSessionOptions : IOptions
         {
             /// <summary>
-            /// How many document references to return.
+            /// Size of the document to be uploaded (in bytes)
             /// </summary>
-            public int Size { get; set; }
+            public long Size { get; set; }
 
             /// <summary>
             /// The document file name, which can subsequently be queried. 

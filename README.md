@@ -14,7 +14,7 @@ Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_
 This library targets .NET 4.5.2 and can be installed via Nuget :
 
 ```
-Install-Package InterFAX.Api -Version 1.0.1
+Install-Package InterFAX.Api -Version 1.0.2
 ```
 
 ## Getting started
@@ -74,7 +74,7 @@ Console.WriteLine($"Account balance is {balance}"); //=> Account balance is 9.86
 
 Submit a fax to a single destination number. Returns the messageId of the fax.
 
-There are a few ways to send a fax. You can directly provide a file path or a url, which can be a web page anywhere or a link to a previously uploaded document resource (see [Documents](#documents)).
+For small documents, there are a few ways to send a fax. You can directly provide a file path, a file stream or a url, which can be a web page anywhere or a link to a previously uploaded document resource (see [Documents](#documents)).
 
 ```csharp
 var options = new SendOptions { FaxNumber = "+11111111112"};
@@ -83,11 +83,19 @@ var options = new SendOptions { FaxNumber = "+11111111112"};
 var fileDocument = interfax.Documents.BuildFaxDocument(@".\folder\fax.txt");
 var messageId = await interfax.SendFax(faxDocument, options);
 
+// with a stream
+// NB : the caller is responsible for opening and closing the stream.
+using (var fileStream = File.OpenRead(@".\folder\fax.txt"))
+{
+  var fileDocument = interfax.Documents.BuildFaxDocument("fax.txt", fileStream);
+  var messageId = await interfax.SendFax(faxDocument, options);
+}
+
 // with a URL
 var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.pdf"));
 var messageId = await interfax.SendFax(urlDocument, options);
 
-// or both at once
+// or a combination
 var documents = new List<IFaxDocument> { fileDocument, urlDocument };
 var messageId = await interfax.SendFax(documents, options)
 ```
@@ -315,12 +323,24 @@ var result = await interfax.Inbound.Resend(123456) "test@example.com")
 
 Document upload sessions allow for uploading of large files up to 20MB in chunks of arbitrary size.
 
-You can do this quite simply by calling :
+You can do this with either a file path :
 
 `UploadSession UploadDocument(string filePath)`
 
 ```csharp
+var fileInfo = new FileInfo("test.pdf"));
 var session = _interfax.Outbound.Documents.UploadDocument(fileInfo.FullName);
+```
+
+Or with a file stream :
+
+`UploadSession UploadDocument(string fileName, FileStream fileStream)`
+
+```csharp
+using (var fileStream = File.OpenRead("test.pdf"))
+{
+  var session = _interfax.Outbound.Documents.UploadDocument(filePath, fileStream);
+}
 ```
 
 The Uri property of the returned session object can be used when sending a fax.
@@ -358,7 +378,7 @@ using (var fileStream = File.OpenRead(filePath))
 Create a document upload session, allowing you to upload large files in chunks.
 
 ```csharp
-var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options)
+var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options);
 ```
 
 **Options:** [`Disposition`, `Sharing`](https://www.interfax.net/en/dev/rest/reference/2967)

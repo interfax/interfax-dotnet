@@ -14,6 +14,19 @@ namespace InterFAX.Api.Test.Unit
         public void can_instantiate_with_credentials()
         {
             var interfax = new FaxClient(Username, Password);
+            Assert.NotNull(interfax.Account);
+            Assert.NotNull(interfax.Documents);
+            Assert.NotNull(interfax.Inbound);
+            Assert.NotNull(interfax.Outbound);
+        }
+
+        private void CreateClient() 
+        {
+            var interfax = new FaxClient();
+            Assert.NotNull(interfax.Account);
+            Assert.NotNull(interfax.Documents);
+            Assert.NotNull(interfax.Inbound);
+            Assert.NotNull(interfax.Outbound);  
         }
 
         [Test]
@@ -22,10 +35,7 @@ namespace InterFAX.Api.Test.Unit
             ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = Username;
             ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = Password;
 
-            Assert.DoesNotThrow(() =>
-            {
-                var interfax = new FaxClient();
-            });
+            Assert.DoesNotThrow(CreateClient);
 
             ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = null;
             ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = null;
@@ -40,10 +50,7 @@ namespace InterFAX.Api.Test.Unit
             Environment.SetEnvironmentVariable(FaxClient.UsernameConfigKey, Username);
             Environment.SetEnvironmentVariable(FaxClient.PasswordConfigKey, Password);
 
-            Assert.DoesNotThrow(() =>
-            {
-                var interfax = new FaxClient();
-            });
+            Assert.DoesNotThrow(CreateClient);
 
             Environment.SetEnvironmentVariable(FaxClient.UsernameConfigKey, existingUsername);
             Environment.SetEnvironmentVariable(FaxClient.PasswordConfigKey, existingPassword);
@@ -52,10 +59,7 @@ namespace InterFAX.Api.Test.Unit
         [Test]
         public void should_throw_if_no_config()
         {
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var interfax = new FaxClient();
-            });
+            Assert.Throws<ArgumentException>(CreateClient);
         }
     }
 }
