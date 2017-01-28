@@ -13,7 +13,7 @@ namespace InterFAX.Api.Dtos
         /// <summary>
         /// The Fax Id.
         /// </summary>
-        public string MessageId { get; set; }
+        public int MessageId { get; set; }
 
         /// <summary>
         /// The Phone number at which this fax was received.

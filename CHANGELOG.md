@@ -8,3 +8,7 @@
 * ToString for Errors
 * Added message to ApiException by calling base class
 * Added methods to send FileStreams
+
+# 1.0.3 (2017-01-28)
+
+* Changed InboundFax.MessageId from string to int

@@ -308,7 +308,7 @@ var result = await interfax.Inbound.Resend(123456);
 // => OK
 
 // resend to a specific address
-var result = await interfax.Inbound.Resend(123456) "test@example.com")
+var result = await interfax.Inbound.Resend(123456) "test@example.com");
 
 // => OK
 ```
