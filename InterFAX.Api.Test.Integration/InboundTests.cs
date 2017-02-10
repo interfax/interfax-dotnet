@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace InterFAX.Api.Test.Integration
@@ -9,6 +10,12 @@ namespace InterFAX.Api.Test.Integration
     public class InboundTests
     {
         private FaxClient _interfax;
+        private readonly string _testPath;
+
+        public InboundTests()
+        {
+            _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
+        }
 
         [SetUp]
         public void Setup()
@@ -49,12 +56,13 @@ namespace InterFAX.Api.Test.Integration
             Assert.IsTrue(list.Any());
         }
 
+        [Ignore("Need to add an existing inbound fax Id to make this pass. Can't send inbound fax to myself...")]
         [Test]
         public void can_stream_fax_image_to_file()
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
 
-            using (var imageStream = _interfax.Inbound.GetFaxImageStream(291704306).Result)
+            using (var imageStream = _interfax.Inbound.GetFaxImageStream(123456789).Result)
             {
                 using (var fileStream = File.Create(filename))
                 {

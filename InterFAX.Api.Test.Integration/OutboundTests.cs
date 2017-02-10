@@ -134,6 +134,21 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
+        public void can_get_completed_fax()
+        {
+            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions
+            {
+                FaxNumber = "+442086090368",
+
+            }).Result;
+
+            // get the completed fax
+            var response = _interfax.Outbound.GetCompleted(faxId).Result;
+            Assert.NotNull(response);
+        }
+
+        [Test]
         public void can_send_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));

@@ -32,7 +32,7 @@ namespace InterFAX.Api.Dtos
         /// <summary>
         /// The fax header text inserted at the top of the page.
         /// </summary>
-        public int PageHeader { get; set; }
+        public string PageHeader { get; set; }
 
         /// <summary>
         // Time when the transaction was originally submitted. Always returned in GMT.

@@ -130,12 +130,12 @@ var faxes = await interfax.Outbound.GetList();
 
 ### Get completed fax list
 
-`async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(IEnumerable<int> ids = null)`
+`async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(params int[] ids)`
 
 Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
 
 ```csharp
-var completed = await interfax.Outbound.Completed([123, 234]);
+var completed = await interfax.Outbound.GetCompleted(1, 2, 3);
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2972)

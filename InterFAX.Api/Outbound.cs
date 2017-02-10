@@ -36,9 +36,9 @@ namespace InterFAX.Api
         /// Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
         /// </summary>
         /// <param name="ids">Array of fax id's to retrieve, if they have completed.</param>
-        public async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(IEnumerable<int> ids = null)
+        public async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(params int[] ids)
         {
-            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<OutboundFaxSummary>>($"{ResourceUri}/completed");
+            return await _interfax.HttpClient.GetResourceAsync<IEnumerable<OutboundFaxSummary>>($"{ResourceUri}/completed?ids={String.Join(",", ids)}");
         }
 
         /// <summary>

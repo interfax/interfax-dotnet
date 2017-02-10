@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace InterFAX.Api.Test.Unit
 {
@@ -163,6 +164,22 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var response = _interfax.Outbound.HideFax(1).Result;
+            Assert.That(_handler.ExpectedUriWasVisited());
+        }
+
+        [Test]
+        public void GetCompleted_should_call_correct_uri()
+        {
+            _handler = new MockHttpMessageHandler
+            {
+                ExpectedHttpMethod = HttpMethod.Get,
+                ExpectedContent = "",
+                ExpectedUri = new Uri("https://rest.interfax.net/outbound/faxes/completed?ids=1,2,3")
+            };
+
+            _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
+
+            var response = _interfax.Outbound.GetCompleted(1, 2, 3).Result;
             Assert.That(_handler.ExpectedUriWasVisited());
         }
     }
