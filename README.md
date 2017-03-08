@@ -92,7 +92,7 @@ using (var fileStream = File.OpenRead(@".\folder\fax.txt"))
 }
 
 // with a URL
-var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.pdf"));
+var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.html"));
 var messageId = await interfax.SendFax(urlDocument, options);
 
 // or a combination
