@@ -5,6 +5,7 @@
     public enum ImageStatus
     {
         READ,
-        UNREAD
+        UNREAD,
+        DONT_EXIST
     }
 }
