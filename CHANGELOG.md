@@ -22,3 +22,8 @@
 * Changed OutboundFax.PageHeader from int (!) to string
 * Fixed a bug in Outbound.GetCompleted so that it gets completed faxes now.
 * Signature change in GetCompleted from IEnumerable<int> to params int[] (not considered breaking as it wasn't working before)
+
+<a name="1.0.5"></a>
+# 1.0.5 (2017-04-18)
+
+* Added support for image status DONT_EXIST in InfoundFax 
