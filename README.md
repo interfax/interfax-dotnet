@@ -81,23 +81,23 @@ var options = new SendOptions { FaxNumber = "+11111111112"};
 
 // with a path
 var fileDocument = interfax.Documents.BuildFaxDocument(@".\folder\fax.txt");
-var messageId = await interfax.SendFax(faxDocument, options);
+var messageId = await interfax.Outbound.SendFax(faxDocument, options);
 
 // with a stream
 // NB : the caller is responsible for opening and closing the stream.
 using (var fileStream = File.OpenRead(@".\folder\fax.txt"))
 {
   var fileDocument = interfax.Documents.BuildFaxDocument("fax.txt", fileStream);
-  var messageId = await interfax.SendFax(faxDocument, options);
+  var messageId = await interfax.Outbound.SendFax(faxDocument, options);
 }
 
 // with a URL
 var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.html"));
-var messageId = await interfax.SendFax(urlDocument, options);
+var messageId = await interfax.Outbound.SendFax(urlDocument, options);
 
 // or a combination
 var documents = new List<IFaxDocument> { fileDocument, urlDocument };
-var messageId = await interfax.SendFax(documents, options)
+var messageId = await interfax.Outbound.SendFax(documents, options)
 ```
 
 InterFAX supports over 20 file types including HTML, PDF, TXT, Word, and many more. For a full list see the [Supported File Types](https://www.interfax.net/en/help/supported_file_types) documentation.
