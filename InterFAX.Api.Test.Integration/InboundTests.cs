@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using NUnit.Framework;
+using Scotch;
+using InterFAX.Api.Test.Integration.extensions;
 
 namespace InterFAX.Api.Test.Integration
 {
@@ -11,6 +13,7 @@ namespace InterFAX.Api.Test.Integration
     {
         private FaxClient _interfax;
         private readonly string _testPath;
+		private int _inboundFaxId = TestingConfig.inboundFaxID;
 
         public InboundTests()
         {
@@ -20,10 +23,12 @@ namespace InterFAX.Api.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _interfax = new FaxClient();
-        }
+            var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
+		}
 
         [Test]
+		[IgnoreMocked]
         public void can_get_inbound_fax_list()
         {
             var list = _interfax.Inbound.GetList().Result;
@@ -33,18 +38,19 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_get_forwarding_emails()
         {
-            var emails = _interfax.Inbound.GetForwardingEmails(291704306).Result;
+            var emails = _interfax.Inbound.GetForwardingEmails(_inboundFaxId).Result;
             Assert.IsTrue(emails.Any());
         }
 
         [Test]
         public void can_get_single_fax()
         {
-            var item = _interfax.Inbound.GetFaxRecord(291704306).Result;
+            var item = _interfax.Inbound.GetFaxRecord(_inboundFaxId).Result;
             Assert.NotNull(item);
         }
 
         [Test]
+		[IgnoreMocked]
         public void can_get_inbound_fax_list_with_listoptions()
         {
             var list = _interfax.Inbound.GetList(new Inbound.ListOptions
@@ -62,7 +68,7 @@ namespace InterFAX.Api.Test.Integration
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
 
-            using (var imageStream = _interfax.Inbound.GetFaxImageStream(123456789).Result)
+            using (var imageStream = _interfax.Inbound.GetFaxImageStream(_inboundFaxId).Result)
             {
                 using (var fileStream = File.Create(filename))
                 {
@@ -77,7 +83,7 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_mark_fax_as_read()
         {
-            const int messageId = 291704306;
+            int messageId = _inboundFaxId;
 
             var response = _interfax.Inbound.MarkRead(messageId).Result;
 
@@ -88,7 +94,7 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_mark_fax_as_unread()
         {
-            const int messageId = 291704306;
+            int messageId = _inboundFaxId;
 
             var response = _interfax.Inbound.MarkUnread(messageId).Result;
 
@@ -99,7 +105,7 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_resend_fax()
         {
-            const int messageId = 291704306;
+            int messageId = _inboundFaxId;
 
             Assert.DoesNotThrow(() =>
             {
@@ -109,7 +115,8 @@ namespace InterFAX.Api.Test.Integration
 
 
         [Test]
-        public void resending_non_existing_fax_builds_error_response()
+		[IgnoreMocked]
+		public void resending_non_existing_fax_builds_error_response()
         {
             const int messageId = 1;
 
@@ -131,7 +138,7 @@ namespace InterFAX.Api.Test.Integration
         [Test]
         public void can_resend_fax_with_email_address()
         {
-            const int messageId = 291704306;
+			int messageId = _inboundFaxId;
 
             Assert.DoesNotThrow(() =>
             {

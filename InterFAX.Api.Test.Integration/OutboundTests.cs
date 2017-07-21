@@ -5,6 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using NUnit.Framework;
+using Scotch;
+using System.Threading.Tasks;
+using InterFAX.Api.Test.Integration.extensions;
 
 namespace InterFAX.Api.Test.Integration
 {
@@ -14,7 +17,11 @@ namespace InterFAX.Api.Test.Integration
         private FaxClient _interfax;
         private readonly string _testPath;
 
-        public OutboundTests()
+		private String _faxNumber = TestingConfig.faxNumber;
+		private int _outboundFaxID = TestingConfig.outboundFaxID;
+
+
+		public OutboundTests()
         {
             _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
         }
@@ -22,11 +29,13 @@ namespace InterFAX.Api.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _interfax = new FaxClient();
+			var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
         }
 
 
         [Test]
+		[IgnoreMocked]
         public void can_get_outbound_fax_list()
         {
             var list = _interfax.Outbound.GetList().Result;
@@ -35,6 +44,7 @@ namespace InterFAX.Api.Test.Integration
 
 
         [Test]
+		[IgnoreMocked]
         public void can_get_outbound_fax_list_with_listoptions()
         {
             // not testing the results, except that they should be a list of 
@@ -50,13 +60,16 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
-        public void can_stream_fax_image_to_file()
+		[IgnoreMocked]
+
+		public void can_stream_fax_image_to_file()
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
+			var filepath = _testPath + '/' + filename;
 
-            // Fax a document
-            var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
-            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+			// Fax a document
+			var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
             Assert.True(faxId > 0);
 
             // Have to pause for a moment as the image isn't immediately available
@@ -64,15 +77,15 @@ namespace InterFAX.Api.Test.Integration
 
             using (var imageStream = _interfax.Outbound.GetFaxImageStream(faxId).Result)
             {
-                using (var fileStream = File.Create(filename))
+                using (var fileStream = File.Create(filepath))
                 {
                     Utils.CopyStream(imageStream, fileStream);
                 }
             }
 
-            Assert.IsTrue(File.Exists(filename));
-            Assert.IsTrue(new FileInfo(filename).Length > 0);
-            File.Delete(filename);
+            Assert.IsTrue(File.Exists(filepath));
+            Assert.IsTrue(new FileInfo(filepath).Length > 0);
+            File.Delete(filepath);
         }
 
         [Test]
@@ -81,7 +94,7 @@ namespace InterFAX.Api.Test.Integration
         {
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
-            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
             Assert.True(faxId > 0);
 
             var exception = Assert.Throws<AggregateException>(() =>
@@ -100,9 +113,9 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
-        public void can_resend_fax()
+        public void can_cancel_fax()
         {
-            const int messageId = 661900007;
+			int messageId = _outboundFaxID;
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
@@ -112,12 +125,13 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
+		[IgnoreMocked]
         public void can_hide_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions
             {
-                FaxNumber = "+442086090368",
+                FaxNumber = _faxNumber,
 
             }).Result;
 
@@ -139,7 +153,7 @@ namespace InterFAX.Api.Test.Integration
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions
             {
-                FaxNumber = "+442086090368",
+                FaxNumber = _faxNumber,
 
             }).Result;
 
@@ -152,11 +166,11 @@ namespace InterFAX.Api.Test.Integration
         public void can_send_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
-            var response = _interfax.Outbound.SendFax(faxDocument, new SendOptions
-            {
-                FaxNumber = "+442086090368",
+			var response = _interfax.Outbound.SendFax(faxDocument, new SendOptions
+			{
+				FaxNumber = _faxNumber,
 
-            }).Result;
+			}).Result;
         }
 
         [Test]
@@ -173,7 +187,7 @@ namespace InterFAX.Api.Test.Integration
 
             var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
             {
-                FaxNumber = "+442086090368",
+                FaxNumber = _faxNumber,
 
             }).Result;
         }
@@ -191,7 +205,7 @@ namespace InterFAX.Api.Test.Integration
 
             var response = _interfax.Outbound.SendFax(faxDocuments, new SendOptions
             {
-                FaxNumber = "+442086090368",
+                FaxNumber = _faxNumber,
 
             }).Result;
         }

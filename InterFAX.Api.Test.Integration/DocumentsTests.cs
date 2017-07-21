@@ -4,6 +4,8 @@ using System.Net;
 using System.Reflection;
 using InterFAX.Api.Dtos;
 using NUnit.Framework;
+using Scotch;
+using InterFAX.Api.Test.Integration.extensions;
 
 namespace InterFAX.Api.Test.Integration
 {
@@ -13,7 +15,9 @@ namespace InterFAX.Api.Test.Integration
         private FaxClient _interfax;
         private readonly string _testPath;
 
-        public DocumentsTests()
+		private String _faxNumber = TestingConfig.faxNumber;
+
+		public DocumentsTests()
         {
             _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
         }
@@ -21,10 +25,12 @@ namespace InterFAX.Api.Test.Integration
         [SetUp]
         public void Setup()
         {
-            _interfax = new FaxClient();
-        }
+			var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
+		}
 
         [Test]
+		[IgnoreMocked]
         public void can_get_outbound_document_list()
         {
             Assert.DoesNotThrow(() =>
@@ -34,6 +40,7 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
+		[IgnoreMocked]
         public void can_get_outbound_document_list_with_listoptions()
         {
             Assert.DoesNotThrow(() =>
@@ -47,6 +54,7 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
+		[IgnoreMocked]
         public void can_create_and_delete_document_upload_session()
         {
             var options = new Documents.UploadSessionOptions
@@ -88,7 +96,9 @@ namespace InterFAX.Api.Test.Integration
 
 
         [Test]
-        public void can_upload_large_document()
+		[IgnoreMocked]
+
+		public void can_upload_large_document()
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "large.pdf"));
 
@@ -116,7 +126,8 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
-        public void can_fax_small_document()
+		[IgnoreMocked]
+		public void can_fax_small_document()
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "test.pdf"));
 
@@ -125,7 +136,7 @@ namespace InterFAX.Api.Test.Integration
 
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(session.Uri);
-            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
             Assert.True(faxId > 0);
 
             // Check that the session no longer exists
@@ -152,7 +163,7 @@ namespace InterFAX.Api.Test.Integration
             {
                 // Fax the document
                 var faxDocument = _interfax.Documents.BuildFaxDocument("test.pdf", fileStream);
-                faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = "+442086090368" }).Result;
+                faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
                 Assert.True(faxId > 0);
             }
         }
