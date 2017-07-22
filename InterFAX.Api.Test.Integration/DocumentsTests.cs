@@ -30,7 +30,6 @@ namespace InterFAX.Api.Test.Integration
 		}
 
         [Test]
-		[IgnoreMocked]
         public void can_get_outbound_document_list()
         {
             Assert.DoesNotThrow(() =>
@@ -40,7 +39,6 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
-		[IgnoreMocked]
         public void can_get_outbound_document_list_with_listoptions()
         {
             Assert.DoesNotThrow(() =>

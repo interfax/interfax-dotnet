@@ -28,11 +28,10 @@ namespace InterFAX.Api.Test.Integration
 		}
 
         [Test]
-		[IgnoreMocked]
         public void can_get_inbound_fax_list()
         {
             var list = _interfax.Inbound.GetList().Result;
-            Assert.IsTrue(list.Any());
+			//Assert.IsTrue(list.Any()); Call can still be valid if no inbound faxes
         }
 
         [Test]
@@ -50,7 +49,6 @@ namespace InterFAX.Api.Test.Integration
         }
 
         [Test]
-		[IgnoreMocked]
         public void can_get_inbound_fax_list_with_listoptions()
         {
             var list = _interfax.Inbound.GetList(new Inbound.ListOptions
@@ -59,10 +57,10 @@ namespace InterFAX.Api.Test.Integration
                 Limit = 10,
                 AllUsers = true
             }).Result;
-            Assert.IsTrue(list.Any());
-        }
+			//Assert.IsTrue(list.Any()); Call can still be valid if no inbound faxes
+		}
 
-        [Ignore("Need to add an existing inbound fax Id to make this pass. Can't send inbound fax to myself...")]
+		[Ignore("Need to add an existing inbound fax Id to make this pass. Can't send inbound fax to myself...")]
         [Test]
         public void can_stream_fax_image_to_file()
         {

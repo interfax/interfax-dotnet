@@ -21,7 +21,7 @@ namespace InterFAX.Api.Test.Integration.extensions
 		{
 			if (TestingConfig.scotchMode == Scotch.ScotchMode.Replaying)
 			{
-				Assert.Ignore("Test cannot be mocked through scotch, ignored in API replay mode");
+				Assert.Ignore("Test cannot be mocked, ignored in API replay mode");
 			}
 		}
 	}
