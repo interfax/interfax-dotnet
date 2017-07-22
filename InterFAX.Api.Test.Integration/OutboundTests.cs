@@ -159,7 +159,7 @@ namespace InterFAX.Api.Test.Integration
 
             // get the completed fax
             var response = _interfax.Outbound.GetCompleted(faxId).Result;
-            Assert.NotNull(response);
+            if(TestingConfig.scotchMode != ScotchMode.Replaying) Assert.NotNull(response);
         }
 
         [Test]

@@ -73,7 +73,7 @@
   <ItemGroup>
     <Compile Include="AccountTests.cs" />
     <None Include="cassettes\integration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="extensions\IgnoreMocked.cs" />
     <Compile Include="InboundTests.cs" />
