@@ -189,4 +189,3 @@ FakesAssemblies/
 
 # Ignore config because api keys are stored here (copy example configs to these files)
 web.config
-app.config
