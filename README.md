@@ -17,8 +17,6 @@ This library targets .NET 4.5.2 and can be installed via Nuget :
 Install-Package InterFAX.Api -Version 1.0.5
 ```
 
-.NET 3.5/4.0 solutions must make calls directly to the REST API [(documentation)](https://www.interfax.net/en/dev/rest/reference) [(sample code)](https://github.com/kfwls/interfax-dotnet).
-
 ## Getting started
 
 
