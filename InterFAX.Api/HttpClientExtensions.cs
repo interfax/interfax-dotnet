@@ -12,7 +12,8 @@ namespace InterFAX.Api
     {
         public static async Task<T> GetResourceAsync<T>(this HttpClient httpClient, string requestUri, IOptions options = null)
         {
-            var task = httpClient.GetAsync(requestUri.AddOptions(options));
+			var uri = requestUri.AddOptions(options);
+			var task = httpClient.GetAsync(uri);
             var response = await task;
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsAsync<T>();
 
@@ -21,7 +22,8 @@ namespace InterFAX.Api
 
         public static async Task<T> PostAsync<T>(this HttpClient httpClient, string requestUri, IOptions options = null)
         {
-            var task = httpClient.PostAsync(requestUri.AddOptions(options), new StringContent(""));
+			var uri = requestUri.AddOptions(options);
+			var task = httpClient.PostAsync(uri, new StringContent(""));
             var response = await task;
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsAsync<T>();
 
@@ -30,7 +32,8 @@ namespace InterFAX.Api
 
         public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, IOptions options = null, HttpContent content = null)
         {
-            var task = httpClient.PostAsync(requestUri.AddOptions(options), content ?? new StringContent(""));
+			var uri = requestUri.AddOptions(options);
+			var task = httpClient.PostAsync(uri, content ?? new StringContent(""));
             var response = await task;
             if (response.IsSuccessStatusCode) return response;
 

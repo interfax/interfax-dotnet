@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/interfax/interfax-dotnet.svg?branch=master)](https://travis-ci.org/interfax/interfax-dotnet)
 
-[Installation](#installation) | [Getting Started](#getting-started) | [Contributing](#contributing) | [License](#license)
+[Installation](#installation) | [Getting Started](#getting-started) | [Running Tests](#running-tests) | [Contributing](#contributing) | [License](#license)
 
 Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_CLI_languages) with the [InterFAX REST API](https://www.interfax.net/en/dev/rest/reference).
 
@@ -448,6 +448,18 @@ var result = await interfax.Outbound.Documents.CancelUploadSession(sessionId);
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2964)
 
 ---
+## Running Tests
+
+### Manually (Visual Studio)
+1. Install the [NUnit 3 Test Adapter](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnit3TestAdapter)
+2. Open the Test Explorer Test > Windows > Test Explorer
+3. "Run All"
+
+### Manually (CLI/Console Runner)
+See the [NUnit Documentation](https://github.com/nunit/docs/wiki/Console-Runner)
+
+### Updating recorded api responses
+Integration tests are mocked through scotch, see ```InterFAX.Api.Text.Integration.TestingConfig``` to disable during development if valid api credentials are available. [(see here)](https://www.interfax.net/en/dev/register)
 
 ## Contributing
 

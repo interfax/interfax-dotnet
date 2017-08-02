@@ -54,7 +54,18 @@ namespace InterFAX.Api
             Initialise(username, password, messageHandler);
         }
 
-        private void Initialise(string username, string password, HttpMessageHandler messageHandler = null)
+		/// <summary>
+		/// Initialise the client with a custom httpClient
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="password"></param>
+		/// <param name="httpClient">Custom httpClient instance</param>
+		public FaxClient(string username, string password, HttpClient httpClient)
+		{
+			Initialise(username, password, null, httpClient);
+		}
+
+		private void Initialise(string username, string password, HttpMessageHandler messageHandler = null, HttpClient httpClient = null)
         {
             if (string.IsNullOrEmpty(username))
                 throw new ArgumentException($"{UsernameConfigKey} has not been set.");
@@ -68,6 +79,8 @@ namespace InterFAX.Api
             Documents = new Documents(this);
 
             HttpClient = messageHandler == null ? new HttpClient() : new HttpClient(messageHandler);
+			HttpClient = httpClient != null ? httpClient : HttpClient;
+
             HttpClient.BaseAddress = new Uri("https://rest.interfax.net/");
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.Add("Authorization",
