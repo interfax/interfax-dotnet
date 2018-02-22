@@ -1,7 +1,7 @@
 
 # InterFAX .NET Library
 
-[![Build Status](https://travis-ci.org/interfax/interfax-dotnet.svg?branch=master)](https://travis-ci.org/interfax/interfax-dotnet)
+[![NuGet version](https://badge.fury.io/nu/interfax.api.svg)](https://badge.fury.io/nu/interfax.api) [![Build Status](https://travis-ci.org/interfax/interfax-dotnet.svg?branch=master)](https://travis-ci.org/interfax/interfax-dotnet)
 
 [Installation](#installation) | [Getting Started](#getting-started) | [Running Tests](#running-tests) | [Contributing](#contributing) | [License](#license)
 
