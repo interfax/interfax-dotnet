@@ -1,12 +1,5 @@
 language: csharp
 solution: InterFAX.Api.sln
-before_install:
-  - wget -O nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-  - mono nuget.exe
-install:
-  - cp ./InterFAX.Api.Test.Integration/App.config.example ./InterFAX.Api.Test.Integration/App.config
-  - mono nuget.exe restore InterFAX.Api.sln
-  - mono nuget.exe install NUnit.Runners -Version 3.4.1 -OutputDirectory testrunner
-script:
-  - xbuild /p:Configuration=Release InterFAX.Api.sln
-  - mono ./testrunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./InterFAX.Api.Test.Unit/bin/Release/InterFAX.Api.Test.Unit.dll
+script: 
+  - cd InterFAX/Api.Test.Unit
+  - dotnet test
