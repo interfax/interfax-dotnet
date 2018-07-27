@@ -62,8 +62,6 @@
       <Link>test.pdf</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="App.config" />
-    <None Include="App.config.example" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\testfiles\test.html">

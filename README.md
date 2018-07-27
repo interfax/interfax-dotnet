@@ -11,7 +11,12 @@ Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_
 
 ## Installation
 
-This library targets .NET 4.5.2 and can be installed via Nuget :
+This library targets .NET 4.6.1+/.NET Standard 2.0 and can be installed via Nuget :
+```
+Install-Package InterFAX.Api -Version 2.0.0
+```
+
+The legacy PCL format package targetting .NET 4.5.2 is available as version 1.X.X:
 
 ```
 Install-Package InterFAX.Api -Version 1.0.5
@@ -26,25 +31,24 @@ Install-Package InterFAX.Api -Version 1.0.5
 
 ## Client
 
-The client follows the [12-factor](http://12factor.net/config) apps principle and can be either set directly, via configuration files or environment variables.
+Credentials are set through environment variables, or passed as parameters directly during initialization. Credentials passed as parameters take precedence over those set in the environment.
 
 ```csharp
 using InterFAX.Api;
 
-// Initialize using parameters
+// | Initialize using parameters
 var interfax = new FaxClient(username: "...", password: "...");
 
-// Initialize using App.config or Environment variables (both have the same key)
-// NB : App.config will take precedence over environment variables.
-// <appSettings>
-//   <add key="INTERFAX_USERNAME" value="username"/>
-//   <add key="INTERFAX_PASSWORD" value="password"/>
-// </appSettings>
-
+// | Initialize using Environment variables
+// key : string 
+// INTERFAX_USERNAME : InterFax Username
+// INTERFAX_PASSWORD : InterFax Password
 var interfax = new FaxClient();
 ```
 
 All connections are established over HTTPS.
+
+Your host must support TL
 
 ## Account
 
