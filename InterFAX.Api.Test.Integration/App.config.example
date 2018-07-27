@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <appSettings>
-    <add key="INTERFAX_USERNAME" value="fakeusername"/>
-    <add key="INTERFAX_PASSWORD" value="fakepassword"/>
-  </appSettings>
-</configuration>

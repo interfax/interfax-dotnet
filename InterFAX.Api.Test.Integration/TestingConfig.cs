@@ -15,9 +15,9 @@ namespace InterFAX.Api.Test.Integration
 		// Modify to disable API replay, and test against live API. Requires valid API Credentials
 		// See https://www.interfax.net/en/dev/register
 
-		internal const String username = "NA";
-		internal const String password = "NA";
-		internal const ScotchMode scotchMode = ScotchMode.Replaying; // ScotchMode.None
+		internal const String username = "X";
+		internal const String password = "X";
+		internal const ScotchMode scotchMode = ScotchMode.None; // ScotchMode.None
 
 		// Do not modify unless rebuilding cassette, or testing with replay disabled.
 		// Values tied to request URLs
