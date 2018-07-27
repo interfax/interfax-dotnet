@@ -7,7 +7,7 @@
     <PackageProjectUrl>https://github.com/interfax/interfax-dotnet</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</RepositoryUrl>
-    <PackageReleaseNotes>.Net Standard 2.0 Compatible Version</PackageReleaseNotes>
+    <PackageReleaseNotes>Add support for .NET Core and .Net Standard 2.0</PackageReleaseNotes>
     <Copyright>Copyright 2018</Copyright>
     <PackageTags>Fax Api InterFax Upland</PackageTags>
   </PropertyGroup>

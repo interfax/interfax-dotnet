@@ -4,14 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using NUnit.Framework;
-using Scotch;
 using System.Threading.Tasks;
-using InterFAX.Api.Test.Integration.extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Integration
 {
-    [TestFixture]
+    [TestClass]
     public class OutboundTests
     {
         private FaxClient _interfax;
@@ -26,15 +24,14 @@ namespace InterFAX.Api.Test.Integration
             _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
         }
 
-        [SetUp]
+        [TestInitialize]
         public void Setup()
         {
-			var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
-			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password);
         }
 
 
-        [Test]
+        [TestMethod]
         public void can_get_outbound_fax_list()
         {
             var list = _interfax.Outbound.GetList().Result;
@@ -42,7 +39,7 @@ namespace InterFAX.Api.Test.Integration
         }
 
 
-        [Test]
+        [TestMethod]
         public void can_get_outbound_fax_list_with_listoptions()
         {
             // not testing the results, except that they should be a list of 
@@ -57,9 +54,7 @@ namespace InterFAX.Api.Test.Integration
             //Assert.IsTrue(list.Any()); Call can be valid if no outbound faxes present
 		}
 
-        [Test]
-		[IgnoreMocked]
-
+        [TestMethod]
 		public void can_stream_fax_image_to_file()
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
@@ -68,7 +63,7 @@ namespace InterFAX.Api.Test.Integration
 			// Fax a document
 			var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
-            Assert.True(faxId > 0);
+            Assert.IsTrue(faxId > 0);
 
             // Have to pause for a moment as the image isn't immediately available
             System.Threading.Thread.Sleep(5000);
@@ -86,22 +81,22 @@ namespace InterFAX.Api.Test.Integration
             File.Delete(filepath);
         }
 
-        [Test]
+        [TestMethod]
         [Ignore("The fax api appears to have changed since this was last run - cancelling a sent fax returns OK.")]
         public void cancelling_already_sent_fax_builds_error_response()
         {
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
-            Assert.True(faxId > 0);
+            Assert.IsTrue(faxId > 0);
 
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var result = _interfax.Outbound.CancelFax(faxId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
 
             var error = apiException.Error;
             Assert.AreEqual(HttpStatusCode.Conflict, apiException.StatusCode);
@@ -110,19 +105,19 @@ namespace InterFAX.Api.Test.Integration
             Assert.AreEqual("Transaction ID 661900007 has already completed", error.MoreInfo);
         }
 
-        [Test]
+        [TestMethod]
         public void can_cancel_fax()
         {
 			int messageId = _outboundFaxID;
 
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var response = _interfax.Outbound.CancelFax(messageId).Result;
             });
-            Assert.NotNull(exception);
+            Assert.IsNotNull(exception);
         }
 
-        [Test]
+        [TestMethod]
         public void can_hide_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
@@ -134,17 +129,17 @@ namespace InterFAX.Api.Test.Integration
 
             // verify it shows up in the list
             var faxes = _interfax.Outbound.SearchFaxes(new SearchOptions { Ids = new [] {faxId}}).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.AreEqual(1, faxes.Count());
+			 Assert.AreEqual(1, faxes.Count());
 
             // hide the fax
             var response = _interfax.Outbound.HideFax(faxId).Result;
 
             // search again
             faxes = _interfax.Outbound.SearchFaxes(new SearchOptions { Ids = new[] { faxId } }).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.AreEqual(0, faxes.Count());
+			 Assert.AreEqual(0, faxes.Count());
         }
 
-        [Test]
+        [TestMethod]
         public void can_get_completed_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
@@ -156,10 +151,10 @@ namespace InterFAX.Api.Test.Integration
 
             // get the completed fax
             var response = _interfax.Outbound.GetCompleted(faxId).Result;
-            if(TestingConfig.scotchMode != ScotchMode.Replaying) Assert.NotNull(response);
+            Assert.IsNotNull(response);
         }
 
-        [Test]
+        [TestMethod]
         public void can_send_fax()
         {
             var faxDocument = _interfax.Documents.BuildFaxDocument(Path.Combine(_testPath, "test.pdf"));
@@ -170,7 +165,7 @@ namespace InterFAX.Api.Test.Integration
 			}).Result;
         }
 
-        [Test]
+        [TestMethod]
         public void can_send_multiple_inline_faxes()
         {
             var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
@@ -189,7 +184,7 @@ namespace InterFAX.Api.Test.Integration
             }).Result;
         }
 
-        [Test]
+        [TestMethod]
         public void can_send_multiple_mixed_faxes()
         {
             var path = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;

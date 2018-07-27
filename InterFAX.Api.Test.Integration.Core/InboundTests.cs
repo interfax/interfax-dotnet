@@ -3,12 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using NUnit.Framework;
-using Scotch;
-using InterFAX.Api.Test.Integration.extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Integration
 {
+    [TestClass]
     public class InboundTests
     {
         private FaxClient _interfax;
@@ -20,35 +19,34 @@ namespace InterFAX.Api.Test.Integration
             _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
         }
 
-        [SetUp]
+        [TestInitialize]
         public void Setup()
         {
-            var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
-			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password);
 		}
 
-        [Test]
+        [TestMethod]
         public void can_get_inbound_fax_list()
         {
             var list = _interfax.Inbound.GetList().Result;
 			//Assert.IsTrue(list.Any()); Call can still be valid if no inbound faxes
         }
 
-        [Test]
+        [TestMethod]
         public void can_get_forwarding_emails()
         {
             var emails = _interfax.Inbound.GetForwardingEmails(_inboundFaxId).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.IsTrue(emails.Any());
+			 Assert.IsTrue(emails.Any());
         }
 
-        [Test]
+        [TestMethod]
         public void can_get_single_fax()
         {
             var item = _interfax.Inbound.GetFaxRecord(_inboundFaxId).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.NotNull(item);
+			 Assert.IsNotNull(item);
         }
 
-        [Test]
+        [TestMethod]
         public void can_get_inbound_fax_list_with_listoptions()
         {
             var list = _interfax.Inbound.GetList(new Inbound.ListOptions
@@ -61,7 +59,7 @@ namespace InterFAX.Api.Test.Integration
 		}
 
 		[Ignore("Need to add an existing inbound fax Id to make this pass. Can't send inbound fax to myself...")]
-        [Test]
+        [TestMethod]
         public void can_stream_fax_image_to_file()
         {
             var filename = $"{Guid.NewGuid().ToString()}.tiff";
@@ -78,7 +76,7 @@ namespace InterFAX.Api.Test.Integration
             File.Delete(filename);
         }
 
-        [Test]
+        [TestMethod]
         public void can_mark_fax_as_read()
         {
             int messageId = _inboundFaxId;
@@ -86,10 +84,10 @@ namespace InterFAX.Api.Test.Integration
             var response = _interfax.Inbound.MarkRead(messageId).Result;
 
             var fax = _interfax.Inbound.GetFaxRecord(messageId).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.AreEqual(ImageStatus.READ, fax.ImageStatus);
+			 Assert.AreEqual(ImageStatus.READ, fax.ImageStatus);
         }
 
-        [Test]
+        [TestMethod]
         public void can_mark_fax_as_unread()
         {
             int messageId = _inboundFaxId;
@@ -97,34 +95,31 @@ namespace InterFAX.Api.Test.Integration
             var response = _interfax.Inbound.MarkUnread(messageId).Result;
 
             var fax = _interfax.Inbound.GetFaxRecord(messageId).Result;
-			if (TestingConfig.scotchMode != ScotchMode.Replaying) Assert.AreEqual(ImageStatus.UNREAD, fax.ImageStatus);
+			 Assert.AreEqual(ImageStatus.UNREAD, fax.ImageStatus);
 		}
 
-        [Test]
+        [TestMethod]
         public void can_resend_fax()
         {
             int messageId = _inboundFaxId;
-
-            Assert.DoesNotThrow(() =>
-            {
+            
                 var response = _interfax.Inbound.Resend(messageId).Result;
-            });
+        
         }
 
 
-        [Test]
-		[IgnoreMocked]
+        [TestMethod]
 		public void resending_non_existing_fax_builds_error_response()
         {
             const int messageId = 1;
 
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var response = _interfax.Inbound.Resend(messageId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
 
             var error = apiException.Error;
             Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
@@ -133,15 +128,12 @@ namespace InterFAX.Api.Test.Integration
             Assert.AreEqual("Invalid ID [1]", error.MoreInfo);
         }
 
-        [Test]
+        [TestMethod]
         public void can_resend_fax_with_email_address()
         {
 			int messageId = _inboundFaxId;
-
-            Assert.DoesNotThrow(() =>
-            {
-                var response = _interfax.Inbound.Resend(messageId, "InterFAXDevelopersDotNet@interfax.net").Result;
-            });
+            
+            var response = _interfax.Inbound.Resend(messageId, "InterFAXDevelopersDotNet@interfax.net").Result;
         }
     }
 }

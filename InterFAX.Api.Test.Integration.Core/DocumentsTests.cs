@@ -3,13 +3,11 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using InterFAX.Api.Dtos;
-using NUnit.Framework;
-using Scotch;
-using InterFAX.Api.Test.Integration.extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Integration
 {
-    [TestFixture]
+    [TestClass]
     public class DocumentsTests
     {
         private FaxClient _interfax;
@@ -22,37 +20,29 @@ namespace InterFAX.Api.Test.Integration
             _testPath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)).LocalPath;
         }
 
-        [SetUp]
+        [TestInitialize]
         public void Setup()
         {
-			var httpClient = HttpClients.NewHttpClient(_testPath + TestingConfig.scotchCassettePath, TestingConfig.scotchMode);
-			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password, httpClient);
+			_interfax = new FaxClient(TestingConfig.username, TestingConfig.password);
 		}
 
-        [Test]
+        [TestMethod]
         public void can_get_outbound_document_list()
         {
-            Assert.DoesNotThrow(() =>
-            {
                 var list = _interfax.Outbound.Documents.GetUploadSessions().Result;
-            });
         }
 
-        [Test]
+        [TestMethod]
         public void can_get_outbound_document_list_with_listoptions()
         {
-            Assert.DoesNotThrow(() =>
-            {
                 var list = _interfax.Outbound.Documents.GetUploadSessions(new Documents.ListOptions
                 {
                     Offset = 10,
                     Limit = 5
                 }).Result;
-            });
         }
 
-        [Test]
-		[IgnoreMocked]
+        [TestMethod]
         public void can_create_and_delete_document_upload_session()
         {
             var options = new Documents.UploadSessionOptions
@@ -64,10 +54,10 @@ namespace InterFAX.Api.Test.Integration
             };
 
             var sessionId = _interfax.Outbound.Documents.CreateUploadSession(options).Result;
-            Assert.NotNull(sessionId);
+            Assert.IsNotNull(sessionId);
 
             var sessionStatus = _interfax.Outbound.Documents.GetUploadSession(sessionId).Result;
-            Assert.NotNull(sessionStatus);
+            Assert.IsNotNull(sessionStatus);
             Assert.AreEqual(options.Name, sessionStatus.FileName);
             Assert.AreEqual(options.Size, sessionStatus.FileSize);
             Assert.AreEqual(options.Disposition, sessionStatus.Disposition);
@@ -77,13 +67,13 @@ namespace InterFAX.Api.Test.Integration
             var result = _interfax.Outbound.Documents.CancelUploadSession(sessionId).Result;
             Assert.AreEqual("OK", result);
 
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var response = _interfax.Outbound.Documents.GetUploadSession(sessionId).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
 
             var error = apiException.Error;
             Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
@@ -93,9 +83,7 @@ namespace InterFAX.Api.Test.Integration
         }
 
 
-        [Test]
-		[IgnoreMocked]
-
+        [TestMethod]
 		public void can_upload_large_document()
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "large.pdf"));
@@ -108,13 +96,13 @@ namespace InterFAX.Api.Test.Integration
             Assert.AreEqual("OK", result);
 
             // Check that the session no longer exists
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var response = _interfax.Outbound.Documents.GetUploadSession(session.Id).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
 
             var error = apiException.Error;
             Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
@@ -123,8 +111,7 @@ namespace InterFAX.Api.Test.Integration
             Assert.IsNull(error.MoreInfo);
         }
 
-        [Test]
-		[IgnoreMocked]
+        [TestMethod]
 		public void can_fax_small_document()
         {
             var fileInfo = new FileInfo(Path.Combine(_testPath, "test.pdf"));
@@ -135,16 +122,16 @@ namespace InterFAX.Api.Test.Integration
             // Fax the document
             var faxDocument = _interfax.Documents.BuildFaxDocument(session.Uri);
             var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
-            Assert.True(faxId > 0);
+            Assert.IsTrue(faxId > 0);
 
             // Check that the session no longer exists
-            var exception = Assert.Throws<AggregateException>(() =>
+            var exception = Assert.ThrowsException<AggregateException>(() =>
             {
                 var response = _interfax.Outbound.Documents.GetUploadSession(session.Id).Result;
             });
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
 
             var error = apiException.Error;
             Assert.AreEqual(HttpStatusCode.NotFound, apiException.StatusCode);
@@ -153,7 +140,7 @@ namespace InterFAX.Api.Test.Integration
             Assert.IsNull(error.MoreInfo);
         }
 
-        [Test]
+        [TestMethod]
         public void can_fax_small_document_as_stream()
         {
             int faxId;
@@ -162,7 +149,7 @@ namespace InterFAX.Api.Test.Integration
                 // Fax the document
                 var faxDocument = _interfax.Documents.BuildFaxDocument("test.pdf", fileStream);
                 faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
-                Assert.True(faxId > 0);
+                Assert.IsTrue(faxId > 0);
             }
         }
     }

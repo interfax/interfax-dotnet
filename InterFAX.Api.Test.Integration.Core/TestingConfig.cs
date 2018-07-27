@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Scotch;
 
 namespace InterFAX.Api.Test.Integration
 {
@@ -17,7 +16,6 @@ namespace InterFAX.Api.Test.Integration
 
 		internal const String username = "X";
 		internal const String password = "X";
-		internal const ScotchMode scotchMode = ScotchMode.None; // ScotchMode.None
 
 		// Do not modify unless rebuilding cassette, or testing with replay disabled.
 		// Values tied to request URLs
