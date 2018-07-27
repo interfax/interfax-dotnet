@@ -1,12 +1,12 @@
 using InterFAX.Api.Dtos;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class UploadSessionOptionsTests
     {
-        [Test]
+        [TestMethod]
         public void should_return_dictionary_of_options()
         {
             var options = new Documents.UploadSessionOptions
@@ -21,19 +21,19 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(4, actual.Keys.Count);
 
             var key = "size";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Size.ToString(), actual[key]);
 
             key = "name";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Name, actual[key]);
 
             key = "disposition";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("permanent", actual[key]);
 
             key = "sharing";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("private", actual[key]);
         }
     }

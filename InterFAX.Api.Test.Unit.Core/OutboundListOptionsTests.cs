@@ -1,11 +1,11 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class OutboundListOptionsTests
     {
-        [Test]
+        [TestMethod]
         public void should_return_dictionary_of_options()
         {
             var listOptions = new Outbound.ListOptions
@@ -20,19 +20,19 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(4, actual.Keys.Count);
 
             var key = "lastId";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(listOptions.LastId.ToString(), actual[key]);
 
             key = "limit";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(listOptions.Limit.ToString(), actual[key]);
 
             key = "userId";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(listOptions.UserId, actual[key]);
 
             key = "sortOrder";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("asc", actual[key]);
         }
     }

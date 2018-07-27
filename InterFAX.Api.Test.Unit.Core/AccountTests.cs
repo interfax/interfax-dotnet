@@ -1,17 +1,17 @@
 using System;
 using System.Globalization;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class AccountTests
     {
         private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
 
-        [Test]
+        [TestMethod]
         public void should_call_correct_balance_uri()
         {
             const decimal expected = 1.23M;

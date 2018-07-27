@@ -2,17 +2,17 @@ using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Web;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class InboundTests
     {
         private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
-        [Test]
+        [TestMethod]
         public void GetList_should_call_correct_uri_with_options()
         {
             _handler = new MockHttpMessageHandler
@@ -31,10 +31,10 @@ namespace InterFAX.Api.Test.Unit
                 AllUsers = true
             }).Result;
 
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void GetList_should_call_correct_uri_without_options()
         {
             _handler = new MockHttpMessageHandler
@@ -46,10 +46,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetList().Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void GetFaxRecord_should_call_correct_uri()
         {
             _handler = new MockHttpMessageHandler
@@ -61,10 +61,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetFaxRecord(1).Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void GetFaxImageStream_should_call_correct_uri()
         {
             _handler = new MockHttpMessageHandler
@@ -76,10 +76,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetFaxImageStream(1).Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void GetForwardingEmails_should_call_correct_uri()
         {
             _handler = new MockHttpMessageHandler
@@ -91,10 +91,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Inbound.GetForwardingEmails(1).Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void MarkRead_should_call_correct_uri()
         {
             _handler = new MockHttpMessageHandler
@@ -107,10 +107,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var response = _interfax.Inbound.MarkRead(1).Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void MarkUnread_should_call_correct_uri()
         {
             _handler = new MockHttpMessageHandler
@@ -123,7 +123,7 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var response = _interfax.Inbound.MarkUnread(1).Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
     }
 }

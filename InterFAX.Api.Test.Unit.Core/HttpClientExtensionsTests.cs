@@ -1,17 +1,17 @@
 using System;
 using System.Globalization;
 using System.Net;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class HttpClientExtensionsTests
     {
         private FaxClient _interfax;
         private MockHttpMessageHandler _handler;
 
-        [Test]
+        [TestMethod]
         public void should_create_HttpError_from_error_response()
         {
             _handler = new MockHttpMessageHandler
@@ -25,17 +25,17 @@ namespace InterFAX.Api.Test.Unit
 
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
-            var exception = Assert.Throws<AggregateException>(() => { var balance = _interfax.Account.GetBalance().Result; });
+            var exception = Assert.ThrowsException<AggregateException>(() => { var balance = _interfax.Account.GetBalance().Result; });
             Assert.AreEqual(1, exception.InnerExceptions.Count);
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
             Assert.AreEqual((int) _handler.ExpectedStatusCode, apiException.Error.Code);
             Assert.AreEqual(_handler.ExpectedReasonPhrase, apiException.Error.Message);
             Assert.AreEqual(_handler.ExpectedContent, apiException.Error.MoreInfo);
         }
 
-        [Test]
+        [TestMethod]
         public void should_create_HttpError_from_empty_error_response()
         {
             _handler = new MockHttpMessageHandler
@@ -49,11 +49,11 @@ namespace InterFAX.Api.Test.Unit
 
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
-            var exception = Assert.Throws<AggregateException>(() => { var balance = _interfax.Account.GetBalance().Result; });
+            var exception = Assert.ThrowsException<AggregateException>(() => { var balance = _interfax.Account.GetBalance().Result; });
             Assert.AreEqual(1, exception.InnerExceptions.Count);
 
             var apiException = exception.InnerExceptions[0] as ApiException;
-            Assert.NotNull(apiException);
+            Assert.IsNotNull(apiException);
             Assert.AreEqual((int) _handler.ExpectedStatusCode, apiException.Error.Code);
             Assert.AreEqual(_handler.ExpectedReasonPhrase, apiException.Error.Message);
             Assert.AreEqual("No content returned", apiException.Error.MoreInfo);

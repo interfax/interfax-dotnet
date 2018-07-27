@@ -1,12 +1,12 @@
 using System;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class SearchOptionsTests
     {
-        [Test]
+        [TestMethod]
         public void should_return_dictionary_of_options()
         {
             var searchOptions = new SearchOptions
@@ -27,47 +27,47 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(10, actual.Keys.Count);
 
             var key = "ids";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("1,2,3,4,5", actual[key]);
 
             key = "reference";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.Reference, actual[key]);
 
             key = "dateFrom";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("2016-06-01T14:30:00Z", actual[key]);
 
             key = "dateTo";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("2016-07-05T16:45:00Z", actual[key]);
 
             key = "status";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("Completed", actual[key]);
 
             key = "userId";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.UserId, actual[key]);
 
             key = "faxNumber";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.FaxNumber, actual[key]);
 
             key = "sortOrder";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("asc", actual[key]);
 
             key = "offset";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.Offset.ToString(), actual[key]);
 
             key = "limit";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.Limit.ToString(), actual[key]);
         }
 
-        [Test]
+        [TestMethod]
         public void should_switch_on_status()
         {
             var searchOptions = new SearchOptions
@@ -79,7 +79,7 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(1, actual.Keys.Count);
 
             const string key = "status";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(searchOptions.Status.ToString(), actual[key]);
         }
     }

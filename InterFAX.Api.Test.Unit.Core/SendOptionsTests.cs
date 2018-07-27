@@ -1,13 +1,13 @@
 using System;
 using InterFAX.Api.Dtos;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class SendOptionsTests
     {
-        [Test]
+        [TestMethod]
         public void should_return_dictionary_of_options()
         {
             var options = new SendOptions
@@ -31,59 +31,59 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(13, actual.Keys.Count);
 
             var key = "faxNumber";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.FaxNumber, actual[key]);
 
             key = "contact";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Contact, actual[key]);
 
             key = "postponeTime";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("2016-06-01T14:30:30Z", actual[key]);
 
             key = "retriesToPerform";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("5", actual[key]);
 
             key = "csid";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Csid, actual[key]);
 
             key = "pageHeader";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.PageHeader, actual[key]);
 
             key = "reference";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Reference, actual[key]);
 
             key = "replyAddress";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.ReplyAddress, actual[key]);
 
             key = "pageSize";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("a4", actual[key]);
 
             key = "fitToPage";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("scale", actual[key]);
 
             key = "pageOrientation";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("portrait", actual[key]);
 
             key = "resolution";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("standard", actual[key]);
 
             key = "rendering";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("greyscale", actual[key]);
         }
 
-        [Test]
+        [TestMethod]
         public void should_return_partial_dictionary_of_options()
         {
             var options = new SendOptions
@@ -99,23 +99,23 @@ namespace InterFAX.Api.Test.Unit
             Assert.AreEqual(5, actual.Keys.Count);
 
             var key = "faxNumber";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.FaxNumber, actual[key]);
 
             key = "contact";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Contact, actual[key]);
 
             key = "postponeTime";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("2016-06-01T14:30:30Z", actual[key]);
 
             key = "retriesToPerform";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual("5", actual[key]);
 
             key = "csid";
-            Assert.That(actual.ContainsKey(key));
+            Assert.IsTrue(actual.ContainsKey(key));
             Assert.AreEqual(options.Csid, actual[key]);
         }
     }

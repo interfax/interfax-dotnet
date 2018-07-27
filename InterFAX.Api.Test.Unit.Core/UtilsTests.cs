@@ -1,11 +1,11 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class UtilsTests
     {
-        [Test]
+        [TestMethod]
         public void can_base64_encode()
         {
             const string expected = "YXN0cmluZzp0b2VuY29kZQ==";

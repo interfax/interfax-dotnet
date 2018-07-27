@@ -4,11 +4,11 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Web;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class DocumentsTests
     {
         private FaxClient _interfax;
@@ -22,7 +22,7 @@ namespace InterFAX.Api.Test.Unit
 
             // unpack test file
             _testPdf = Path.Combine(assemblyPath, "test.pdf");
-            using (var resource = assembly.GetManifestResourceStream("InterFAX.Api.Test.Unit.test.pdf"))
+            using (var resource = assembly.GetManifestResourceStream("InterFAX.Api.Test.Unit.Core.test.pdf"))
             {
                 using (var file = new FileStream(_testPdf, FileMode.Create, FileAccess.Write))
                 {
@@ -31,7 +31,7 @@ namespace InterFAX.Api.Test.Unit
             }
         }
 
-        [Test]
+        [TestMethod]
         public void GetList_should_call_correct_uri_with_options()
         {
             _handler = new MockHttpMessageHandler
@@ -48,10 +48,10 @@ namespace InterFAX.Api.Test.Unit
                 Offset = 5
             }).Result;
 
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void GetList_should_call_correct_uri_without_options()
         {
             _handler = new MockHttpMessageHandler
@@ -63,10 +63,10 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var actual = _interfax.Outbound.Documents.GetUploadSessions().Result;
-            Assert.That(_handler.ExpectedUriWasVisited());
+            Assert.IsTrue(_handler.ExpectedUriWasVisited());
         }
 
-        [Test]
+        [TestMethod]
         public void can_build_fax_document()
         {
             _handler = new MockHttpMessageHandler
@@ -78,20 +78,20 @@ namespace InterFAX.Api.Test.Unit
             _interfax = new FaxClient("unit-test-user", "unit-test-pass", _handler);
 
             var faxDocument = _interfax.Documents.BuildFaxDocument(_testPdf);
-            Assert.NotNull(faxDocument);
+            Assert.IsNotNull(faxDocument);
             var fileDocument = faxDocument as FileDocument;
-            Assert.NotNull(fileDocument);
+            Assert.IsNotNull(fileDocument);
             Assert.AreEqual(_testPdf, fileDocument.FilePath);
             Assert.AreEqual("application/pdf", fileDocument.MediaType);
         }
 
-        [Test]
+        [TestMethod]
         public void can_unpack_and_load_supported_media_types()
         {
             _interfax = new FaxClient("unit-test-user", "unit-test-pass");
             var types = _interfax.Documents.SupportedMediaTypes;
-            Assert.NotNull(types);
-            Assert.That(types.ContainsKey("pdf"));
+            Assert.IsNotNull(types);
+            Assert.IsTrue(types.ContainsKey("pdf"));
         }
     }
 }

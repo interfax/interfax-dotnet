@@ -1,47 +1,47 @@
 using System;
 using System.Configuration;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterFAX.Api.Test.Unit
 {
-    [TestFixture]
+    [TestClass]
     public class FaxClientTests
     {
         private const string Username = "fakeusername";
         private const string Password = "fakepassword";
 
-        [Test]
+        [TestMethod]
         public void can_instantiate_with_credentials()
         {
             var interfax = new FaxClient(Username, Password);
-            Assert.NotNull(interfax.Account);
-            Assert.NotNull(interfax.Documents);
-            Assert.NotNull(interfax.Inbound);
-            Assert.NotNull(interfax.Outbound);
+            Assert.IsNotNull(interfax.Account);
+            Assert.IsNotNull(interfax.Documents);
+            Assert.IsNotNull(interfax.Inbound);
+            Assert.IsNotNull(interfax.Outbound);
         }
 
         private void CreateClient() 
         {
             var interfax = new FaxClient();
-            Assert.NotNull(interfax.Account);
-            Assert.NotNull(interfax.Documents);
-            Assert.NotNull(interfax.Inbound);
-            Assert.NotNull(interfax.Outbound);  
+            Assert.IsNotNull(interfax.Account);
+            Assert.IsNotNull(interfax.Documents);
+            Assert.IsNotNull(interfax.Inbound);
+            Assert.IsNotNull(interfax.Outbound);  
         }
 
-        [Test]
+        [TestMethod]
         public void can_instantiate_from_config()
         {
             ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = Username;
             ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = Password;
 
-            Assert.DoesNotThrow(CreateClient);
+            CreateClient();
 
             ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = null;
             ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = null;
         }
 
-        [Test]
+        [TestMethod]
         public void can_instantiate_from_environment()
         {
             var existingUsername = Environment.GetEnvironmentVariable(FaxClient.UsernameConfigKey);
@@ -50,16 +50,16 @@ namespace InterFAX.Api.Test.Unit
             Environment.SetEnvironmentVariable(FaxClient.UsernameConfigKey, Username);
             Environment.SetEnvironmentVariable(FaxClient.PasswordConfigKey, Password);
 
-            Assert.DoesNotThrow(CreateClient);
+            CreateClient();
 
             Environment.SetEnvironmentVariable(FaxClient.UsernameConfigKey, existingUsername);
             Environment.SetEnvironmentVariable(FaxClient.PasswordConfigKey, existingPassword);
         }
 
-        [Test]
+        [TestMethod]
         public void should_throw_if_no_config()
         {
-            Assert.Throws<ArgumentException>(CreateClient);
+            Assert.ThrowsException<ArgumentException>(() => CreateClient());
         }
     }
 }
