@@ -30,18 +30,6 @@ namespace InterFAX.Api.Test.Unit
         }
 
         [TestMethod]
-        public void can_instantiate_from_config()
-        {
-            ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = Username;
-            ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = Password;
-
-            CreateClient();
-
-            ConfigurationManager.AppSettings[FaxClient.UsernameConfigKey] = null;
-            ConfigurationManager.AppSettings[FaxClient.PasswordConfigKey] = null;
-        }
-
-        [TestMethod]
         public void can_instantiate_from_environment()
         {
             var existingUsername = Environment.GetEnvironmentVariable(FaxClient.UsernameConfigKey);

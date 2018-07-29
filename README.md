@@ -46,9 +46,11 @@ var interfax = new FaxClient(username: "...", password: "...");
 var interfax = new FaxClient();
 ```
 
+Use of configurationManager was removed in 2.0.0, due to conversion to .NET Standard.
+
 All connections are established over HTTPS.
 
-Your host must support TL
+Clieny must support TLS 1.1+ as of June 30th 2018 (See [TLS 1.0 End of Life](https://www.interfax.net/en/news/20180423))
 
 ## Account
 

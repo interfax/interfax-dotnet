@@ -43,14 +43,9 @@ namespace InterFAX.Api
         /// </summary>
         public FaxClient(HttpMessageHandler messageHandler = null)
         {
-            var username = ConfigurationManager.AppSettings[UsernameConfigKey];
-            if (string.IsNullOrEmpty(username))
-                username = Environment.GetEnvironmentVariable(UsernameConfigKey);
-
-            var password = ConfigurationManager.AppSettings[PasswordConfigKey];
-            if (string.IsNullOrEmpty(password))
-                password = Environment.GetEnvironmentVariable(PasswordConfigKey);
-
+            
+            var username = Environment.GetEnvironmentVariable(UsernameConfigKey);
+            var password = Environment.GetEnvironmentVariable(PasswordConfigKey);
             Initialise(username, password, messageHandler);
         }
 
