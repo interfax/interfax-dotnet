@@ -27,3 +27,11 @@
 # 1.0.5 (2017-04-18)
 
 * Added support for image status DONT_EXIST in InfoundFax 
+
+<name="2.0.2"></a>
+# 2.0.2 (2018-08-4)
+
+* Convert library to .NET Standard 2.0
+* Convert tests to .NET Standard and dotnet test support
+* Add support for .NET Core
+* Add handling for valid 204 API responses (Thanks @ricky-shake-n-bake-bobby)
