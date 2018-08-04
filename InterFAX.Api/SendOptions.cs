@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Globalization;
 using InterFAX.Api.Dtos;
 using Newtonsoft.Json;

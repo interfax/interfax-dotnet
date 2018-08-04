@@ -1,23 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C8C2A28B-C476-46C8-AB76-04FBC45DF9D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterFAX.Api", "InterFAX.Api\InterFAX.Api.csproj", "{46B34802-3696-4C09-AA5A-DF1190CF51FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B37E9E80-798D-4F6B-AEB6-39BFCB839C45}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		CHANGELOG.md = CHANGELOG.md
-		InterFAX.Api\InterFAX.Api.nuspec = InterFAX.Api\InterFAX.Api.nuspec
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFAX.Api.Test.Unit", "InterFAX.Api.Test.Unit\InterFAX.Api.Test.Unit.csproj", "{64090388-3301-4BB7-82D1-8C2C03B1BF82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFAX.Api.Test.Unit.Core", "InterFAX.Api.Test.Unit.Core\InterFAX.Api.Test.Unit.Core.csproj", "{A3FA1687-6A23-40C7-9D65-50532DE7A72C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFAX.Api.Test.Integration", "InterFAX.Api.Test.Integration\InterFAX.Api.Test.Integration.csproj", "{738F8549-D143-4B8D-8641-A1BF57947518}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFAX.Api", "InterFAX.Api\InterFAX.Api.csproj", "{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFAX.Api.Test.Integration.Core", "InterFAX.Api.Test.Integration.Core\InterFAX.Api.Test.Integration.Core.csproj", "{E25A2F2B-DAE1-4033-BBD7-DE87E03BEA31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,20 +24,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{64090388-3301-4BB7-82D1-8C2C03B1BF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64090388-3301-4BB7-82D1-8C2C03B1BF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64090388-3301-4BB7-82D1-8C2C03B1BF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64090388-3301-4BB7-82D1-8C2C03B1BF82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{738F8549-D143-4B8D-8641-A1BF57947518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{738F8549-D143-4B8D-8641-A1BF57947518}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{738F8549-D143-4B8D-8641-A1BF57947518}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{738F8549-D143-4B8D-8641-A1BF57947518}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A4809EE-070E-4255-BDD2-2AEECDBA5BC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46B34802-3696-4C09-AA5A-DF1190CF51FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B34802-3696-4C09-AA5A-DF1190CF51FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B34802-3696-4C09-AA5A-DF1190CF51FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B34802-3696-4C09-AA5A-DF1190CF51FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3FA1687-6A23-40C7-9D65-50532DE7A72C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3FA1687-6A23-40C7-9D65-50532DE7A72C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3FA1687-6A23-40C7-9D65-50532DE7A72C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3FA1687-6A23-40C7-9D65-50532DE7A72C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25A2F2B-DAE1-4033-BBD7-DE87E03BEA31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25A2F2B-DAE1-4033-BBD7-DE87E03BEA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25A2F2B-DAE1-4033-BBD7-DE87E03BEA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25A2F2B-DAE1-4033-BBD7-DE87E03BEA31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDC2AECF-FDF2-4A88-BE00-34ED81071455}
 	EndGlobalSection
 EndGlobal
