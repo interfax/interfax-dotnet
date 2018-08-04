@@ -161,6 +161,7 @@ namespace InterFAX.Api
                 Array.Copy(buffer, data, len);
                 var response = UploadDocumentChunk(sessionId, fileStream.Position - len, data).Result;
                 if (response.StatusCode == HttpStatusCode.Accepted) continue;
+                if (response.StatusCode == HttpStatusCode.NoContent) continue;
                 if (response.StatusCode == HttpStatusCode.OK) break;
 
                 throw new ApiException(response.StatusCode, new Error
