@@ -11,10 +11,12 @@ Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_
 
 ## Installation
 
-This library targets .NET 4.6.1+/.NET Standard 2.0 and can be installed via Nuget :
+This library targets .NET Standard 2.0/.NET 4.6.1+ and is installed via NuGet:
 ```
-Install-Package InterFAX.Api -Version 2.0.0
+Install-Package InterFAX.Api -Version 2.0.2
 ```
+
+For a full list of supported platforms see the [.NET Standard](https://github.com/dotnet/standard/blob/master/docs/versions.md) reference documentation.
 
 The legacy PCL format package targetting .NET 4.5.2 is available as version 1.X.X:
 
@@ -457,15 +459,16 @@ var result = await interfax.Outbound.Documents.CancelUploadSession(sessionId);
 ## Running Tests
 
 ### Manually (Visual Studio)
-1. Install the [NUnit 3 Test Adapter](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnit3TestAdapter)
+1. Build the project
 2. Open the Test Explorer Test > Windows > Test Explorer
 3. "Run All"
 
 ### Manually (CLI/Console Runner)
-See the [NUnit Documentation](https://github.com/nunit/docs/wiki/Console-Runner)
+1. Install the [.NET Core SDK](https://www.microsoft.com/net/download)
+2. Run ```dotnet test``` in the root or desired test folder
 
-### Updating recorded api responses
-Integration tests are mocked through scotch, see ```InterFAX.Api.Text.Integration.TestingConfig``` to disable during development if valid api credentials are available. [(see here)](https://www.interfax.net/en/dev/register)
+### Note: Integration Testing
+Integration tests require valid api credentials to pass, these can be provided within the testingConfig.cs within. A free developer account can be registered at [https://www.interfax.net/en/dev/register](https://www.interfax.net/en/dev/register).
 
 ## Contributing
 
