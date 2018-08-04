@@ -1,5 +1,14 @@
 language: csharp
 solution: InterFAX.Api.sln
+mono: none
+dotnet: 2.1.302
+
+install:
+- dotnet restore
+
+script:
+ - dotnet build
+ - dotnet test
 script: 
-  - cd InterFAX/Api.Test.Unit
+  - cd InterFAX.Api.Test.Unit.Core/
   - dotnet test
