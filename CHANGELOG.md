@@ -28,7 +28,7 @@
 
 * Added support for image status DONT_EXIST in InfoundFax 
 
-<name="2.0.2"></a>
+<a name="2.0.2"></a>
 # 2.0.2 (2018-08-4)
 
 * Convert library to .NET Standard 2.0
