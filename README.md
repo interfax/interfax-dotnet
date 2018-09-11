@@ -23,7 +23,7 @@ The legacy PCL format package targetting .NET 4.5.2 is available as version 1.X.
 Install-Package InterFAX.Api -Version 1.0.5
 ```
 
-__Warning:__ If building with VS2015, the nuget package manager must be updated to v3.6+ in order to recognise .NET Standard packages. ([download](https://www.nuget.org/downloads)) If required, the updated package manager will additionally prompt and link to install an updated .NET standard runtime.
+__Warning:__ If building with VS2015, the NuGet package manager must be updated to v3.6+ in order to recognise .NET Standard packages ([download](https://www.nuget.org/downloads)). If required, the updated package manager will additionally prompt and link to install an updated .NET standard runtime.
 
 ## Getting started
 
