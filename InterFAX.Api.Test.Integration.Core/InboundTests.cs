@@ -12,7 +12,7 @@ namespace InterFAX.Api.Test.Integration
     {
         private FaxClient _interfax;
         private readonly string _testPath;
-		private int _inboundFaxId = TestingConfig.inboundFaxID;
+		private Int64 _inboundFaxId = TestingConfig.inboundFaxID;
 
         public InboundTests()
         {
@@ -79,7 +79,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_mark_fax_as_read()
         {
-            int messageId = _inboundFaxId;
+            var messageId = _inboundFaxId;
 
             var response = _interfax.Inbound.MarkRead(messageId).Result;
 
@@ -90,7 +90,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_mark_fax_as_unread()
         {
-            int messageId = _inboundFaxId;
+            var messageId = _inboundFaxId;
 
             var response = _interfax.Inbound.MarkUnread(messageId).Result;
 
@@ -101,7 +101,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_resend_fax()
         {
-            int messageId = _inboundFaxId;
+            var messageId = _inboundFaxId;
             
                 var response = _interfax.Inbound.Resend(messageId).Result;
         
@@ -111,7 +111,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
 		public void resending_non_existing_fax_builds_error_response()
         {
-            const int messageId = 1;
+            const Int64 messageId = 1;
 
             var exception = Assert.ThrowsException<AggregateException>(() =>
             {
@@ -131,7 +131,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_resend_fax_with_email_address()
         {
-			int messageId = _inboundFaxId;
+			var messageId = _inboundFaxId;
             
             var response = _interfax.Inbound.Resend(messageId, "InterFAXDevelopersDotNet@interfax.net").Result;
         }

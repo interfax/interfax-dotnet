@@ -9,7 +9,7 @@ namespace InterFAX.Api
         /// <summary>
         /// List of fax IDs.
         /// </summary>
-        public int[] Ids { get; set; }
+        public Int64[] Ids { get; set; }
 
         /// <summary>
         /// The 'reference' parameter entered at submit time.

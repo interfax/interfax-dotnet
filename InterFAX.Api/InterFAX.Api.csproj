@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.2</Version>
+    <Version>3.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/interfax/interfax-dotnet</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</RepositoryUrl>
-    <PackageReleaseNotes>Add support for .NET Core and .Net Standard 2.0. Remove dependency on Microsoft.Windows.Compatability</PackageReleaseNotes>
+    <PackageReleaseNotes>Breaking change: Upgraded to 64 bit MessageIDs as required by the PCI version of the InterFAX API.</PackageReleaseNotes>
     <Copyright>Copyright 2018</Copyright>
     <PackageTags>Fax Api InterFax Upland</PackageTags>
   </PropertyGroup>

@@ -143,7 +143,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_fax_small_document_as_stream()
         {
-            int faxId;
+            Int64 faxId;
             using (var fileStream = File.OpenRead(Path.Combine(_testPath, "test.pdf")))
             {
                 // Fax the document

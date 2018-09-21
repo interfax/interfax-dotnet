@@ -153,7 +153,7 @@ var completed = await interfax.Outbound.GetCompleted(1, 2, 3);
 
 ### Get outbound fax record
 
-`async Task<OutboundFaxSummary> GetFaxRecord(int id);`
+`async Task<OutboundFaxSummary> GetFaxRecord(Int64 id);`
 
 Retrieves information regarding a previously-submitted fax, including its current status.
 
@@ -167,7 +167,7 @@ var fax = interfax.Outbound.GetFaxRecord(123456)
 
 ### Get outbound fax image stream
 
-`async Task<Stream> GetFaxImageStream(int id);`
+`async Task<Stream> GetFaxImageStream(Int64 id);`
 
 Retrieve the fax image stream (TIFF file) of a submitted fax.
 
@@ -187,7 +187,7 @@ using (var imageStream = await _interfax.Outbound.GetFaxImageStream(662208217))
 
 ### Cancel a fax
 
-`async Task<string> CancelFax(int id)`
+`async Task<string> CancelFax(Int64 id)`
 
 Cancel a fax in progress.
 
@@ -235,7 +235,7 @@ var faxes = await interfax.Inbound.GetList(new ListOptions { UnreadOnly = true }
 
 ### Get inbound fax record
 
-`async Task<InboundFax> GetFaxRecord(int id)`
+`async Task<InboundFax> GetFaxRecord(Int64 id)`
 
 Retrieves a single fax's metadata (receive time, sender number, etc.).
 
@@ -249,7 +249,7 @@ var fax = await interfax.Inbound.GetFaxRecord(123456);
 
 ### Get inbound fax image stream
 
-`async Task<Stream> GetFaxImageStream(int id)`
+`async Task<Stream> GetFaxImageStream(Int64 id)`
 
 Retrieves a single fax's image.
 
@@ -269,7 +269,7 @@ using (var imageStream = await _interfax.Inbound.GetFaxImageStream(291704306))
 
 ### Get forwarding emails
 
-`async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(int id)`
+`async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(Int64 id)`
 
 Retrieve the list of email addresses to which a fax was forwarded.
 
@@ -285,8 +285,8 @@ foreach(var email in emails)
 
 ### Mark as read/unread
 
-`async Task<string> MarkRead(int id)`
-`async Task<string> MarkUnread(int id)`
+`async Task<string> MarkRead(Int64 id)`
+`async Task<string> MarkUnread(Int64 id)`
 
 Mark a transaction as read/unread.
 
@@ -306,7 +306,7 @@ var result = interfax.Inbound.MarkUnread(123456);
 
 ### Resend inbound fax
 
-`async Task<string> Resend(int id, string emailAddress = null)`
+`async Task<string> Resend(Int64 id, string emailAddress = null)`
 
 Resend an inbound fax, optionally to a specific email address.
 

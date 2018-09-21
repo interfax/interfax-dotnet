@@ -1,3 +1,5 @@
+using System;
+
 namespace InterFAX.Api.Dtos
 {
     public class OutboundFaxResult
@@ -5,7 +7,7 @@ namespace InterFAX.Api.Dtos
         /// <summary>
         /// A unique identifier for the fax.
         /// </summary>
-        public int Id { get; set; }
+        public Int64 Id { get; set; }
 
         /// <summary>
         /// A unique resource locator for the fax.
