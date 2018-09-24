@@ -26,7 +26,7 @@ Install-Package InterFAX.Api -Version 1.0.5
 
 __Warning:__ If building with VS2015, the NuGet package manager must be updated to v3.6+ in order to recognise .NET Standard packages within the IDE ([download](https://www.nuget.org/downloads)). If required, the updated package manager will additionally prompt and link to install an updated .NET standard runtime.
 
-(Advanced) For use with the PCI compliant InterFAX API, select the InterFAX_PCI root during initialization (See [Client](#client))
+(Advanced) For use with the [PCI compliant InterFAX API](https://www.interfax.net/en-us/dev/rest_pci/reference), select the InterFAX_PCI root during initialization (See [Client](#client))
 
 ## Getting started
 
@@ -52,6 +52,8 @@ var interfax = new FaxClient(username: "...", password: "...");
 var interfax = new FaxClient();
 
 // Initialize with an alternative InterFAX API (EG PCI Compliant)
+// InterFAX_Default: https://www.interfax.net/en-us/dev/rest/reference
+// InterFAX_PCI: https://www.interfax.net/en-us/dev/rest_pci/reference
 var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_PCI);
 
 ```
