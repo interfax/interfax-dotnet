@@ -17,6 +17,7 @@ Install-Package InterFAX.Api -Version 2.0.2
 
 For a full list of supported platforms see the [.NET Standard](https://github.com/dotnet/standard/blob/master/docs/versions.md) reference documentation.
 
+
 The legacy PCL format package targetting .NET 4.5.2 is available as version 1.X.X:
 
 ```
@@ -24,6 +25,8 @@ Install-Package InterFAX.Api -Version 1.0.5
 ```
 
 __Warning:__ If building with VS2015, the NuGet package manager must be updated to v3.6+ in order to recognise .NET Standard packages within the IDE ([download](https://www.nuget.org/downloads)). If required, the updated package manager will additionally prompt and link to install an updated .NET standard runtime.
+
+(Advanced) For use with the PCI compliant InterFAX API, select the InterFAX_PCI root during initialization (See [Client](#client))
 
 ## Getting started
 
@@ -47,13 +50,17 @@ var interfax = new FaxClient(username: "...", password: "...");
 // INTERFAX_USERNAME : InterFax Username
 // INTERFAX_PASSWORD : InterFax Password
 var interfax = new FaxClient();
+
+// Initialize with an alternative InterFAX API (EG PCI Compliant)
+var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_PCI);
+
 ```
 
 Use of configurationManager was removed in 2.0.0, due to conversion to .NET Standard.
 
 All connections are established over HTTPS.
 
-Clieny must support TLS 1.1+ as of June 30th 2018 (See [TLS 1.0 End of Life](https://www.interfax.net/en/news/20180423))
+Client must support TLS 1.1+ as of June 30th 2018 (See [TLS 1.0 End of Life](https://www.interfax.net/en/news/20180423))
 
 ## Account
 

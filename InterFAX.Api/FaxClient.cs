@@ -27,40 +27,47 @@ namespace InterFAX.Api
 
         internal HttpClient HttpClient { get; private set; }
 
+        public enum ApiRoot
+        {
+            InterFAX_Default,
+            InterFAX_PCI
+        }
+
         /// <summary>
         /// Initialises the client with the given <paramref name="username"/> and <paramref name="password"/>
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="messageHandler"></param>
-        public FaxClient(string username, string password, HttpMessageHandler messageHandler = null)
+        /// <param name="ApiRoot">(Optional) Alternative API Root</param>
+        public FaxClient(string username, string password, HttpMessageHandler messageHandler = null, ApiRoot apiRoot=ApiRoot.InterFAX_Default)
         {
-            Initialise(username, password, messageHandler);
+            Initialise(username, password, apiRoot: apiRoot, messageHandler: messageHandler);
         }
 
         /// <summary>
-        /// Initialises the client from the App.config file.
+        /// Initialises the client from Environment Variables.
         /// </summary>
-        public FaxClient(HttpMessageHandler messageHandler = null)
+        public FaxClient(HttpMessageHandler messageHandler = null, ApiRoot apiRoot = ApiRoot.InterFAX_Default)
         {
-            
             var username = Environment.GetEnvironmentVariable(UsernameConfigKey);
             var password = Environment.GetEnvironmentVariable(PasswordConfigKey);
-            Initialise(username, password, messageHandler);
+            Initialise(username, password, apiRoot: apiRoot, messageHandler: messageHandler);
         }
 
-		/// <summary>
-		/// Initialise the client with a custom httpClient
-		/// </summary>
-		/// <param name="username"></param>
-		/// <param name="password"></param>
-		/// <param name="httpClient">Custom httpClient instance</param>
-		public FaxClient(string username, string password, HttpClient httpClient)
+        /// <summary>
+        /// Initialise the client with a custom httpClient
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="httpClient">Custom httpClient instance</param>
+        /// <param name="ApiRoot">(Optional) Alternative API Root</param>
+        public FaxClient(string username, string password, HttpClient httpClient, ApiRoot apiRoot = ApiRoot.InterFAX_Default)
 		{
-			Initialise(username, password, null, httpClient);
+			Initialise(username, password, apiRoot:apiRoot, messageHandler:null, httpClient:httpClient);
 		}
 
-		private void Initialise(string username, string password, HttpMessageHandler messageHandler = null, HttpClient httpClient = null)
+		private void Initialise(string username, string password, ApiRoot apiRoot, HttpMessageHandler messageHandler = null, HttpClient httpClient = null)
         {
             if (string.IsNullOrEmpty(username))
                 throw new ArgumentException($"{UsernameConfigKey} has not been set.");
@@ -76,7 +83,18 @@ namespace InterFAX.Api
             HttpClient = messageHandler == null ? new HttpClient() : new HttpClient(messageHandler);
 			HttpClient = httpClient != null ? httpClient : HttpClient;
 
-            HttpClient.BaseAddress = new Uri("https://rest.interfax.net/");
+            var root = "";
+            switch (apiRoot)
+            {
+                case ApiRoot.InterFAX_PCI:
+                    root = "https://rest-sl.interfax.net";
+                    break;
+                case ApiRoot.InterFAX_Default:
+                    root = "https://rest.interfax.net";
+                    break;
+            }
+
+            HttpClient.BaseAddress = new Uri(root);
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.Add("Authorization",
                 new List<string> {$"Basic {Utils.Base64Encode($"{username}:{password}")}"});
