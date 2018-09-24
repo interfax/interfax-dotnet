@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace InterFAX.Api
         /// Retrieves a single fax's metadata (receive time, sender number, etc.).
         /// </summary>
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
-        public async Task<InboundFax> GetFaxRecord(int id)
+        public async Task<InboundFax> GetFaxRecord(Int64 id)
         {
             return await _interfax.HttpClient.GetResourceAsync<InboundFax>($"{ResourceUri}/{id}");
         }
@@ -38,7 +39,7 @@ namespace InterFAX.Api
         /// Retrieves a single fax's metadata (receive time, sender number, etc.).
         /// </summary>
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
-        public async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(int id)
+        public async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(Int64 id)
         {
             return await _interfax.HttpClient.GetResourceAsync<IEnumerable<ForwardingEmail>>($"{ResourceUri}/{id}/emails");
         }
@@ -47,7 +48,7 @@ namespace InterFAX.Api
         /// Retrieve the fax image (TIFF file) of a received fax.
         /// </summary>
         /// <param name="id">The message ID of the fax for which to retrieve data.</param>
-        public async Task<Stream> GetFaxImageStream(int id)
+        public async Task<Stream> GetFaxImageStream(Int64 id)
         {
             return await _interfax.HttpClient.GetStreamAsync($"{ResourceUri}/{id}/image");
         }
@@ -58,7 +59,7 @@ namespace InterFAX.Api
         /// Mark a fax as read.
         /// </summary>
         /// <param name="id">The message ID of the fax to mark as read.</param>
-        public async Task<string> MarkRead(int id)
+        public async Task<string> MarkRead(Int64 id)
         {
             var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/mark");
             return response.ReasonPhrase;
@@ -68,7 +69,7 @@ namespace InterFAX.Api
         /// Mark a fax as unread.
         /// </summary>
         /// <param name="id">The message ID of the fax to mark as read.</param>
-        public async Task<string> MarkUnread(int id)
+        public async Task<string> MarkUnread(Int64 id)
         {
             var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/mark?unread=true");
             return response.ReasonPhrase;
@@ -79,7 +80,7 @@ namespace InterFAX.Api
         /// </summary>
         /// <param name="id">The message ID of the fax to resend.</param>
         /// <param name="emailAddress">Optional email address to forward the inbound fax on to.</param>
-        public async Task<string> Resend(int id, string emailAddress = null)
+        public async Task<string> Resend(Int64 id, string emailAddress = null)
         {
             var requestUri = $"{ResourceUri}/{id}/resend";
             if (!string.IsNullOrEmpty(emailAddress)) requestUri += $"?emailAddress={emailAddress}";

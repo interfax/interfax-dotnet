@@ -36,7 +36,7 @@ namespace InterFAX.Api
         /// Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
         /// </summary>
         /// <param name="ids">Array of fax id's to retrieve, if they have completed.</param>
-        public async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(params int[] ids)
+        public async Task<IEnumerable<OutboundFaxSummary>> GetCompleted(params Int64[] ids)
         {
             return await _interfax.HttpClient.GetResourceAsync<IEnumerable<OutboundFaxSummary>>($"{ResourceUri}/completed?ids={String.Join(",", ids)}");
         }
@@ -45,7 +45,7 @@ namespace InterFAX.Api
         /// Retrieves information regarding a previously-submitted fax, including its current status.
         /// </summary>
         /// <param name="id">The transaction ID of the fax for which to retrieve data.</param>
-        public async Task<OutboundFaxSummary> GetFaxRecord(int id)
+        public async Task<OutboundFaxSummary> GetFaxRecord(Int64 id)
         {
             return await _interfax.HttpClient.GetResourceAsync<OutboundFaxSummary>($"{ResourceUri}/{id}");
         }
@@ -54,7 +54,7 @@ namespace InterFAX.Api
         /// Retrieve the fax image (TIFF file) of a submitted fax.
         /// </summary>
         /// <param name="id">The transaction ID of the fax for which to retrieve data.</param>
-        public async Task<Stream> GetFaxImageStream(int id)
+        public async Task<Stream> GetFaxImageStream(Int64 id)
         {
             return await _interfax.HttpClient.GetStreamAsync($"{ResourceUri}/{id}/image");
         }
@@ -79,20 +79,20 @@ namespace InterFAX.Api
         /// Submit a fax with multiple documents to a destination number.
         /// </summary>
         /// <returns>The messageId of the newly created fax.</returns>
-        public async Task<int> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
+        public async Task<Int64> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
         {
             var content = new MultipartContent();
             foreach(var faxDocument in faxDocuments)
                 content.Add(faxDocument.ToHttpContent());
             var response = await _interfax.HttpClient.PostAsync(ResourceUri, options, content);
-            return Convert.ToInt32(response.Headers.Location.Segments.Last());
+            return Convert.ToInt64(response.Headers.Location.Segments.Last());
         }
 
         /// <summary>
         /// Submit a fax with a single document to a destination number.
         /// </summary>
         /// <returns>The messageId of the newly created fax.</returns>
-        public async Task<int> SendFax(IFaxDocument faxDocument, SendOptions options)
+        public async Task<Int64> SendFax(IFaxDocument faxDocument, SendOptions options)
         {
             return await SendFax(new List<IFaxDocument> {faxDocument}, options);
         }
@@ -102,8 +102,8 @@ namespace InterFAX.Api
         /// <summary>
         /// Cancel a fax in progress.
         /// </summary>
-        /// <param name="id">The message ID of the fax to cancel.</param>
-        public async Task<string> CancelFax(int id)
+        /// <param name="id">The message ID of the fax to cancel.</param>`
+        public async Task<string> CancelFax(Int64 id)
         {
             var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/cancel");
             return response.ReasonPhrase;
@@ -117,19 +117,19 @@ namespace InterFAX.Api
         /// <param name="id">The message ID of the fax to resend.</param>
         /// <param name="faxNumber">(optional) The new destination fax number to which this fax should be sent.</param>
         /// <returns>The messageId of the newly created fax.</returns>
-        public async Task<int> ResendFax(int id, string faxNumber = null)
+        public async Task<Int64> ResendFax(Int64 id, string faxNumber = null)
         {
             var requestUri = $"{ResourceUri}/{id}/resend";
             if (!string.IsNullOrEmpty(faxNumber)) requestUri += $"?faxNumber={faxNumber}";
             var response = await _interfax.HttpClient.PostAsync(requestUri);
-            return Convert.ToInt32(response.Headers.Location.Segments.Last());
+            return Convert.ToInt64(response.Headers.Location.Segments.Last());
         }
 
         /// <summary>
         /// Hide a fax from listing in queries (there is no way to unhide a fax).
         /// </summary>
         /// <param name="id">The message ID of the fax to hide.</param>
-        public async Task<string> HideFax(int id)
+        public async Task<string> HideFax(Int64 id)
         {
             var response = await _interfax.HttpClient.PostAsync($"{ResourceUri}/{id}/hide");
             return response.ReasonPhrase;

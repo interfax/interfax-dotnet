@@ -17,6 +17,7 @@ Install-Package InterFAX.Api -Version 2.0.2
 
 For a full list of supported platforms see the [.NET Standard](https://github.com/dotnet/standard/blob/master/docs/versions.md) reference documentation.
 
+
 The legacy PCL format package targetting .NET 4.5.2 is available as version 1.X.X:
 
 ```
@@ -24,6 +25,8 @@ Install-Package InterFAX.Api -Version 1.0.5
 ```
 
 __Warning:__ If building with VS2015, the NuGet package manager must be updated to v3.6+ in order to recognise .NET Standard packages within the IDE ([download](https://www.nuget.org/downloads)). If required, the updated package manager will additionally prompt and link to install an updated .NET standard runtime.
+
+(Advanced) For use with the PCI compliant InterFAX API, select the InterFAX_PCI root during initialization (See [Client](#client))
 
 ## Getting started
 
@@ -47,13 +50,17 @@ var interfax = new FaxClient(username: "...", password: "...");
 // INTERFAX_USERNAME : InterFax Username
 // INTERFAX_PASSWORD : InterFax Password
 var interfax = new FaxClient();
+
+// Initialize with an alternative InterFAX API (EG PCI Compliant)
+var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_PCI);
+
 ```
 
 Use of configurationManager was removed in 2.0.0, due to conversion to .NET Standard.
 
 All connections are established over HTTPS.
 
-Clieny must support TLS 1.1+ as of June 30th 2018 (See [TLS 1.0 End of Life](https://www.interfax.net/en/news/20180423))
+Client must support TLS 1.1+ as of June 30th 2018 (See [TLS 1.0 End of Life](https://www.interfax.net/en/news/20180423))
 
 ## Account
 
@@ -153,7 +160,7 @@ var completed = await interfax.Outbound.GetCompleted(1, 2, 3);
 
 ### Get outbound fax record
 
-`async Task<OutboundFaxSummary> GetFaxRecord(int id);`
+`async Task<OutboundFaxSummary> GetFaxRecord(Int64 id);`
 
 Retrieves information regarding a previously-submitted fax, including its current status.
 
@@ -167,7 +174,7 @@ var fax = interfax.Outbound.GetFaxRecord(123456)
 
 ### Get outbound fax image stream
 
-`async Task<Stream> GetFaxImageStream(int id);`
+`async Task<Stream> GetFaxImageStream(Int64 id);`
 
 Retrieve the fax image stream (TIFF file) of a submitted fax.
 
@@ -187,7 +194,7 @@ using (var imageStream = await _interfax.Outbound.GetFaxImageStream(662208217))
 
 ### Cancel a fax
 
-`async Task<string> CancelFax(int id)`
+`async Task<string> CancelFax(Int64 id)`
 
 Cancel a fax in progress.
 
@@ -235,7 +242,7 @@ var faxes = await interfax.Inbound.GetList(new ListOptions { UnreadOnly = true }
 
 ### Get inbound fax record
 
-`async Task<InboundFax> GetFaxRecord(int id)`
+`async Task<InboundFax> GetFaxRecord(Int64 id)`
 
 Retrieves a single fax's metadata (receive time, sender number, etc.).
 
@@ -249,7 +256,7 @@ var fax = await interfax.Inbound.GetFaxRecord(123456);
 
 ### Get inbound fax image stream
 
-`async Task<Stream> GetFaxImageStream(int id)`
+`async Task<Stream> GetFaxImageStream(Int64 id)`
 
 Retrieves a single fax's image.
 
@@ -269,7 +276,7 @@ using (var imageStream = await _interfax.Inbound.GetFaxImageStream(291704306))
 
 ### Get forwarding emails
 
-`async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(int id)`
+`async Task<IEnumerable<ForwardingEmail>> GetForwardingEmails(Int64 id)`
 
 Retrieve the list of email addresses to which a fax was forwarded.
 
@@ -285,8 +292,8 @@ foreach(var email in emails)
 
 ### Mark as read/unread
 
-`async Task<string> MarkRead(int id)`
-`async Task<string> MarkUnread(int id)`
+`async Task<string> MarkRead(Int64 id)`
+`async Task<string> MarkUnread(Int64 id)`
 
 Mark a transaction as read/unread.
 
@@ -306,7 +313,7 @@ var result = interfax.Inbound.MarkUnread(123456);
 
 ### Resend inbound fax
 
-`async Task<string> Resend(int id, string emailAddress = null)`
+`async Task<string> Resend(Int64 id, string emailAddress = null)`
 
 Resend an inbound fax, optionally to a specific email address.
 

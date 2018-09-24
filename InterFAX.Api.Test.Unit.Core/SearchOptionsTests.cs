@@ -11,7 +11,7 @@ namespace InterFAX.Api.Test.Unit
         {
             var searchOptions = new SearchOptions
             {
-                Ids = new[] { 1, 2, 3, 4, 5 },
+                Ids = new Int64[] { 1, 2, 3, 4, 5 },
                 Reference = "unit-test-reference",
                 DateFrom = new DateTime(2016, 6, 1, 14, 30, 0),
                 DateTo = new DateTime(2016, 7, 5, 16, 45, 0),

@@ -16,7 +16,7 @@ namespace InterFAX.Api.Test.Integration
         private readonly string _testPath;
 
 		private String _faxNumber = TestingConfig.faxNumber;
-		private int _outboundFaxID = TestingConfig.outboundFaxID;
+		private Int64 _outboundFaxID = TestingConfig.outboundFaxID;
 
 
 		public OutboundTests()
@@ -108,7 +108,7 @@ namespace InterFAX.Api.Test.Integration
         [TestMethod]
         public void can_cancel_fax()
         {
-			int messageId = _outboundFaxID;
+			var messageId = _outboundFaxID;
 
             var exception = Assert.ThrowsException<AggregateException>(() =>
             {
