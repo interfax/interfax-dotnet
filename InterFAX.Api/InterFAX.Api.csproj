@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/interfax/interfax-dotnet</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/interfax/interfax-dotnet/blob/master/LICENSE</RepositoryUrl>
-    <PackageReleaseNotes>Breaking change: Upgraded to 64 bit MessageIDs as required by the PCI version of the InterFAX API.</PackageReleaseNotes>
+    <PackageReleaseNotes>Update Documents.BuildFaxDocument with Byte[] Array support</PackageReleaseNotes>
     <Copyright>Copyright 2018</Copyright>
     <PackageTags>Fax Api InterFax Upland</PackageTags>
   </PropertyGroup>

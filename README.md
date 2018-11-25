@@ -12,7 +12,7 @@ Send and receive faxes in [CLI Languages](https://en.wikipedia.org/wiki/List_of_
 
 This library targets .NET Standard 2.0/.NET 4.6.1+ and is installed via NuGet:
 ```
-Install-Package InterFAX.Api -Version 3.0.1
+Install-Package InterFAX.Api -Version 3.1.0
 ```
 
 For a full list of supported platforms see the [.NET Standard](https://github.com/dotnet/standard/blob/master/docs/versions.md) reference documentation.
