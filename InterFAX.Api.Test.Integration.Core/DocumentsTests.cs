@@ -110,6 +110,18 @@ namespace InterFAX.Api.Test.Integration
             Assert.AreEqual("Wrong uploaded document resource", error.Message);
             Assert.IsNull(error.MoreInfo);
         }
+        [TestMethod]
+        public void can_fax_small_document_as_binary()
+        {
+            var path = Path.Combine(_testPath, "test.pdf");
+            var filebytes = File.ReadAllBytes(path);
+            
+
+            // Fax the document
+            var faxDocument = _interfax.Documents.BuildFaxDocument(filebytes, ".pdf");
+            var faxId = _interfax.Outbound.SendFax(faxDocument, new SendOptions { FaxNumber = _faxNumber }).Result;
+            Assert.IsTrue(faxId > 0);
+        }
 
         [TestMethod]
 		public void can_fax_small_document()

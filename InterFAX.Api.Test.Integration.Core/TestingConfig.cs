@@ -20,7 +20,7 @@ namespace InterFAX.Api.Test.Integration
 		// Do not modify unless rebuilding cassette, or testing with replay disabled.
 		// Values tied to request URLs
 
-		internal const String faxNumber = "+449999999999";
+		internal const String faxNumber = "+99999990";
 		internal const int inboundFaxID = 99;
 		internal const int outboundFaxID = 99;
 		internal const String scotchCassettePath = "/cassettes/integration.json";

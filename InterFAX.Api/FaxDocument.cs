@@ -36,6 +36,28 @@ namespace InterFAX.Api
     }
 
     /// <summary>
+    /// Represents a fax document of a loaded byte array document
+    /// </summary>
+    public class FileDocumentArray : IFaxDocument
+    {
+        public byte[] File { get; private set; }
+        public string MediaType { get; private set; }
+
+        internal FileDocumentArray(byte[] file, string mediaType)
+        {
+            File = file;
+            MediaType = mediaType;
+        }
+
+        public HttpContent ToHttpContent()
+        {
+            var content = new ByteArrayContent(File);
+            content.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaType);
+            return content;
+        }
+    }
+
+    /// <summary>
     /// Represents a fax document from a local file.
     /// </summary>
     public class FileDocument : IFaxDocument
