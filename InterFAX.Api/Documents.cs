@@ -65,6 +65,22 @@ namespace InterFAX.Api
         }
 
         /// <summary>
+        /// Build and IFaxDocument from a file byte array
+        /// </summary>
+        /// <param name="file">byte array contents of the file</param>
+        /// <param name="extension">file encoding specified as a file extension (eg ".pdf")</param>
+        /// <returns></returns>
+        public IFaxDocument BuildFaxDocument(byte[] file, string extension)
+        {
+            var ext = extension.Trim('.');
+            var mediaType = SupportedMediaTypes.Keys.Contains(ext)
+                ? SupportedMediaTypes[ext]
+                : "application/octet-stream";
+
+            return new FileDocumentArray(file, mediaType);
+        }
+
+        /// <summary>
         /// Build an IFaxDocument from a local file.
         /// </summary>
         public IFaxDocument BuildFaxDocument(string filePath)

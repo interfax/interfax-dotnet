@@ -108,6 +108,10 @@ using (var fileStream = File.OpenRead(@".\folder\fax.txt"))
   var fileDocument = interfax.Documents.BuildFaxDocument("fax.txt", fileStream);
   var messageId = await interfax.Outbound.SendFax(faxDocument, options);
 }
+// with a byte array
+byte[] file = ...
+var urlDocument = interfax.Documents.BuildFaxDocument(file, ".pdf"));
+var messageId = await interfax.Outbound.SendFax(urlDocument, options);
 
 // with a URL
 var urlDocument = interfax.Documents.BuildFaxDocument(new Uri("https://s3.aws.com/example/fax.html"));
