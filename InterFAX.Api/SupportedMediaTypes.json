@@ -28,7 +28,7 @@
     "FileType": "doc"
   },
   {
-    "MediaType": "application/msword",
+    "MediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "FileType": "docx"
   },
   {
