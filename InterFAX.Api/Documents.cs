@@ -72,7 +72,7 @@ namespace InterFAX.Api
         /// <returns></returns>
         public IFaxDocument BuildFaxDocument(byte[] file, string extension)
         {
-            var ext = extension.Trim('.');
+            var ext = extension.Trim('.').ToLower();
             var mediaType = SupportedMediaTypes.Keys.Contains(ext)
                 ? SupportedMediaTypes[ext]
                 : "application/octet-stream";
@@ -89,7 +89,7 @@ namespace InterFAX.Api
                 throw new FileNotFoundException(filePath);
 
             var extension = Path.GetExtension(filePath) ?? "*";
-            extension = extension.TrimStart('.');
+            extension = extension.TrimStart('.').ToLower();
 
             var mediaType = SupportedMediaTypes.Keys.Contains(extension)
                 ? SupportedMediaTypes[extension]
@@ -104,7 +104,7 @@ namespace InterFAX.Api
         public IFaxDocument BuildFaxDocument(string fileName, FileStream fileStream)
         {
             var extension = Path.GetExtension(fileName) ?? "*";
-            extension = extension.TrimStart('.');
+            extension = extension.TrimStart('.').ToLower();;
 
             var mediaType = SupportedMediaTypes.Keys.Contains(extension)
                 ? SupportedMediaTypes[extension]
