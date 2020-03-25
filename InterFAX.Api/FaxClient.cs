@@ -102,7 +102,8 @@ namespace InterFAX.Api
             JsonConvert.DefaultSettings = () =>
             {
                 var settings = new JsonSerializerSettings();
-                settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+		//Required StringEnumConverter moved to Documents.cs as Custom settings, instead of overriding defaults.
+                //settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
                 return settings;
             };
         }
