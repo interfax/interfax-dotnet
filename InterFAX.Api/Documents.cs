@@ -46,7 +46,9 @@ namespace InterFAX.Api
                             }
                         }
                     }
-
+                    var settings = new JsonSerializerSettings();
+                    settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+                    
                     var mappings = JsonConvert.DeserializeObject<List<MediaTypeMapping>>(File.ReadAllText(typesFile));
                     _supportedMediaTypes = mappings.ToDictionary(
                                 mapping => mapping.FileType,
