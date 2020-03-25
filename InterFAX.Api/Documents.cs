@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using InterFAX.Api.Dtos;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace InterFAX.Api
 {
