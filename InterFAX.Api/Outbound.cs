@@ -81,7 +81,7 @@ namespace InterFAX.Api
         /// <returns>The messageId of the newly created fax.</returns>
         public async Task<Int64> SendFax(List<IFaxDocument> faxDocuments, SendOptions options)
         {
-            var content = new MultipartContent();
+            var content = new MultipartFormDataContent();
             foreach(var faxDocument in faxDocuments)
                 content.Add(faxDocument.ToHttpContent());
             var response = await _interfax.HttpClient.PostAsync(ResourceUri, options, content);
