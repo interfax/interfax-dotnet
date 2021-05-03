@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -30,7 +30,9 @@ namespace InterFAX.Api
         public enum ApiRoot
         {
             InterFAX_Default,
-            InterFAX_PCI
+            InterFAX_PCI,
+            InterFAX_US_PCI,
+            InterFAX_CA_PCI
         }
 
         /// <summary>
@@ -91,6 +93,12 @@ namespace InterFAX.Api
                     break;
                 case ApiRoot.InterFAX_Default:
                     root = "https://rest.interfax.net";
+                    break;
+                case ApiRoot.InterFAX_US_PCI:
+                    root = "https://restus-sl.interfax.net";
+                    break;
+                case ApiRoot.InterFAX_CA_PCI:
+                    root = "https://restca-sl.interfax.net";
                     break;
             }
 
