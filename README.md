@@ -51,10 +51,16 @@ var interfax = new FaxClient(username: "...", password: "...");
 // INTERFAX_PASSWORD : InterFax Password
 var interfax = new FaxClient();
 
-// Initialize with an alternative InterFAX API (EG PCI Compliant)
+// Initialize with a specific InterFAX API Endpoint (EG PCI Compliant)
 // InterFAX_Default: https://www.interfax.net/en-us/dev/rest/reference
 // InterFAX_PCI: https://www.interfax.net/en-us/dev/rest_pci/reference
 var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_PCI);
+
+// Locale specific endpoints for data-sovereignty
+// InterFAX_US_PCI: USA
+var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_US_PCI);
+// InterFAX_CA_PCI: Canada
+var interfax = new FaxClient(apiRoot: FaxClient.ApiRoot.InterFAX_CA_PCI);
 
 ```
 
