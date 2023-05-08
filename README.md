@@ -105,14 +105,14 @@ var options = new SendOptions { FaxNumber = "+11111111112"};
 
 // with a path
 var fileDocument = interfax.Documents.BuildFaxDocument(@".\folder\fax.txt");
-var messageId = await interfax.Outbound.SendFax(faxDocument, options);
+var messageId = await interfax.Outbound.SendFax(fileDocument, options);
 
 // with a stream
 // NB : the caller is responsible for opening and closing the stream.
 using (var fileStream = File.OpenRead(@".\folder\fax.txt"))
 {
   var fileDocument = interfax.Documents.BuildFaxDocument("fax.txt", fileStream);
-  var messageId = await interfax.Outbound.SendFax(faxDocument, options);
+  var messageId = await interfax.Outbound.SendFax(fileDocument, options);
 }
 // with a byte array
 byte[] file = ...
