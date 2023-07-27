@@ -1,6 +1,8 @@
+using InterFAX.Api.Dtos;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,9 +10,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
-using InterFAX.Api.Dtos;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace InterFAX.Api
 {
@@ -49,8 +48,8 @@ namespace InterFAX.Api
                     }
                     var settings = new JsonSerializerSettings();
                     settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
-                    
-                    var mappings = JsonConvert.DeserializeObject<List<MediaTypeMapping>>(File.ReadAllText(typesFile));
+
+                    var mappings = JsonConvert.DeserializeObject<List<MediaTypeMapping>>(File.ReadAllText(typesFile), settings);
                     _supportedMediaTypes = mappings.ToDictionary(
                                 mapping => mapping.FileType,
                                 mapping => mapping.MediaType);
@@ -107,7 +106,7 @@ namespace InterFAX.Api
         public IFaxDocument BuildFaxDocument(string fileName, FileStream fileStream)
         {
             var extension = Path.GetExtension(fileName) ?? "*";
-            extension = extension.TrimStart('.').ToLower();;
+            extension = extension.TrimStart('.').ToLower(); ;
 
             var mediaType = SupportedMediaTypes.Keys.Contains(extension)
                 ? SupportedMediaTypes[extension]
@@ -185,7 +184,7 @@ namespace InterFAX.Api
 
                 throw new ApiException(response.StatusCode, new Error
                 {
-                    Code = (int) response.StatusCode,
+                    Code = (int)response.StatusCode,
                     Message = response.ReasonPhrase,
                     MoreInfo = response.Content.ReadAsStringAsync().Result
                 });
@@ -208,7 +207,7 @@ namespace InterFAX.Api
 
             UploadFileStreamToSession(sessionId, fileStream);
 
-            return GetUploadSession(sessionId).Result;            
+            return GetUploadSession(sessionId).Result;
         }
 
         /// <summary>
@@ -226,7 +225,7 @@ namespace InterFAX.Api
             var sessionId = CreateUploadSession(new UploadSessionOptions
             {
                 Name = fileInfo.Name,
-                Size = (int) fileInfo.Length
+                Size = (int)fileInfo.Length
             }).Result;
 
             using (var fileStream = File.OpenRead(filePath))
